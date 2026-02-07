@@ -10,20 +10,42 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('users', function (Blueprint $table) {
-        $table->id();
-        $table->string('name');
-        $table->string('email')->unique();
-        $table->string('password');
-        // Tambahan untuk project CGS
-        $table->enum('role', ['admin', 'driver'])->default('driver');
-        $table->string('nopol')->nullable(); // Plat nomor (khusus driver)
-        $table->string('phone')->nullable();
-        $table->rememberToken();
-        $table->timestamps();
-    });
-}
+    {
+        // 1. Tabel Users (Ditambah Custom Field Kamu)
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            
+            // --- Custom Field Project CGS ---
+            $table->enum('role', ['admin', 'driver'])->default('driver');
+            $table->string('nopol')->nullable(); // Plat nomor
+            $table->string('phone')->nullable(); // No HP
+            
+            $table->rememberToken();
+            $table->timestamps();
+        });
+
+        // 2. Tabel Password Reset Tokens (Bawaan Wajib)
+        Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
+
+        // 3. Tabel Sessions (INI YANG HILANG DAN BIKIN ERROR)
+        Schema::create('sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->index();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
+        });
+    }
+
     /**
      * Reverse the migrations.
      */
