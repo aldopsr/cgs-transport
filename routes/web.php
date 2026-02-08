@@ -8,6 +8,7 @@ use App\Http\Controllers\RitaseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\DashboardController; 
 use App\Http\Controllers\DriverController;
+use App\Http\Controllers\DriverRitaseController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,6 +26,10 @@ Route::middleware('auth')->group(function () {
     return view('driver.profile', ['user' => auth()->user()]);
 })->name('driver.profile');
 
+    Route::get('/driver/ritase/create', [DriverRitaseController::class, 'create'])->name('driver.ritase.create');
+    Route::post('/driver/ritase/store', [DriverRitaseController::class, 'store'])->name('driver.ritase.store');
+    Route::get('/driver/ritase', [DriverRitaseController::class, 'index'])->name('driver.ritase.index');
+
     Route::post('/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
     Route::patch('/attendance/{id}/verify', [AttendanceController::class, 'verify'])->name('attendance.verify'); // Ubah jadi PATCH
     Route::patch('/attendance/{id}/reject', [AttendanceController::class, 'reject'])->name('attendance.reject'); // Ubah jadi PATCH
@@ -36,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/ritase/store', [RitaseController::class, 'store'])->name('ritase.store');
 
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::put('/ritase/{id}/update', [ReportController::class, 'updateRitase'])->name('ritase.update.admin');
 
     Route::middleware('verified')->group(function () {
         Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');

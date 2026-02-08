@@ -1,177 +1,256 @@
 <x-app-layout>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between">
-            <div class="flex justify-between items-start">
-                <div>
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Active in Queue</p>
-                    <h3 class="text-4xl font-black text-slate-800 mt-2">{{ $queues->count() }}</h3>
-                </div>
-                <div class="p-3 bg-blue-50 text-blue-600 rounded-xl">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                </div>
-            </div>
-            <div class="mt-4 flex items-center gap-1">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                <span class="text-xs text-green-600 font-bold">Live Monitoring</span>
-            </div>
-        </div>
+    {{-- Load Chart.js --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between">
-            <div class="flex justify-between items-start">
-                <div>
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Trips Completed</p>
-                    <h3 class="text-4xl font-black text-slate-800 mt-2">{{ $totalRitase }}</h3>
-                </div>
-                <div class="p-3 bg-purple-50 text-purple-600 rounded-xl">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                </div>
-            </div>
-            <p class="text-xs text-gray-400 mt-4">Total hari ini</p>
-        </div>
-
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between">
-            <div class="flex justify-between items-start">
-                <div>
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Drivers Verified</p>
-                    <h3 class="text-4xl font-black text-slate-800 mt-2">{{ $driverActive }}</h3>
-                </div>
-                <div class="p-3 bg-yellow-50 text-yellow-600 rounded-xl">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.131A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.2-2.873.571-4.205"></path></svg>
-                </div>
-            </div>
-            <p class="text-xs text-gray-400 mt-4">Siap beroperasi</p>
-        </div>
-
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between">
-            <div class="flex justify-between items-start">
-                <div>
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Est. Revenue</p>
-                    <h3 class="text-4xl font-black text-slate-800 mt-2">Rp -</h3>
-                </div>
-                <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                </div>
-            </div>
-            <p class="text-xs text-gray-400 mt-4">Belum ada data tarif</p>
-        </div>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        <div class="lg:col-span-2 space-y-8">
+    {{-- KITA HAPUS x-slot header KARENA TIDAK MUNCUL DI TEMPLATE KAMU --}}
+    
+    <div class="py-6"> {{-- Padding disesuaikan --}}
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="font-bold text-slate-800 text-lg">Live Queue Board</h3>
-                    <span class="text-xs bg-blue-100 text-blue-700 font-bold px-3 py-1 rounded-full">Terminal 3</span>
+            {{-- === BAGIAN BARU: JUDUL & FILTER TANGGAL (LANGSUNG DI BODY) === --}}
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+                <div>
+                    <h2 class="font-bold text-2xl text-gray-800">
+                        🎛️ Dashboard
+                    </h2>
+                    <p class="text-sm text-gray-500">Ringkasan operasional bandara</p>
+                </div>
+                
+                {{-- FORM FILTER TANGGAL --}}
+                <form action="{{ route('dashboard') }}" method="GET" class="flex items-center gap-3 bg-white p-3 rounded-xl shadow-sm border border-gray-100">
+                    <div class="flex flex-col">
+                        <label class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Pilih Tanggal</label>
+                        <input type="date" name="date" value="{{ $date }}" 
+                            class="border-none p-0 text-gray-800 font-bold focus:ring-0 cursor-pointer bg-transparent"
+                            onchange="this.form.submit()">
+                    </div>
+                    <div class="h-8 w-8 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600">
+                        📅
+                    </div>
+                </form>
+            </div>
+            {{-- =============================================================== --}}
+
+            {{-- 1. KARTU STATISTIK --}}
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                
+                {{-- Antrian Total --}}
+                <div class="bg-white overflow-hidden shadow-sm rounded-2xl p-6 relative group hover:shadow-md transition">
+                    <div class="text-gray-500 text-xs font-bold uppercase mb-1 tracking-wider">Total Antrian</div>
+                    <div class="flex justify-between items-center">
+                        <div class="text-4xl font-black text-gray-800">{{ $queues->count() }}</div>
+                        <div class="p-3 bg-blue-50 rounded-xl text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition">👥</div>
+                    </div>
+                    <div class="absolute bottom-0 left-0 w-full h-1 bg-blue-500 rounded-b-2xl"></div>
                 </div>
 
-                <div class="space-y-3">
-                    @forelse($queues as $q)
-                        <div class="flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-blue-200 hover:shadow-md transition bg-white {{ $q->status == 'dipanggil' ? 'bg-green-50 border-green-200' : '' }}">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-xl flex items-center justify-center font-black text-xl {{ $q->status == 'dipanggil' ? 'bg-green-500 text-white shadow-lg shadow-green-200' : 'bg-slate-100 text-slate-500' }}">
-                                    {{ $q->queue_number }}
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-800">{{ $q->user->name }}</h4>
-                                    <p class="text-xs text-slate-500 font-mono">{{ $q->user->nopol }}</p>
-                                </div>
-                            </div>
+                {{-- Trip Selesai --}}
+                <div class="bg-white overflow-hidden shadow-sm rounded-2xl p-6 relative group hover:shadow-md transition">
+                    <div class="text-gray-500 text-xs font-bold uppercase mb-1 tracking-wider">Trip Selesai</div>
+                    <div class="flex justify-between items-center">
+                        <div class="text-4xl font-black text-gray-800">{{ $totalRitase }}</div>
+                        <div class="p-3 bg-purple-50 rounded-xl text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition">🚕</div>
+                    </div>
+                    <div class="absolute bottom-0 left-0 w-full h-1 bg-purple-500 rounded-b-2xl"></div>
+                </div>
 
-                            <div class="flex items-center gap-2">
-                                @if($q->status == 'menunggu')
+                {{-- Driver Aktif --}}
+                <div class="bg-white overflow-hidden shadow-sm rounded-2xl p-6 relative group hover:shadow-md transition">
+                    <div class="text-gray-500 text-xs font-bold uppercase mb-1 tracking-wider">Driver Aktif</div>
+                    <div class="flex justify-between items-center">
+                        <div class="text-4xl font-black text-gray-800">{{ $driverActive }}</div>
+                        <div class="p-3 bg-yellow-50 rounded-xl text-yellow-600 group-hover:bg-yellow-600 group-hover:text-white transition">🆔</div>
+                    </div>
+                    <div class="absolute bottom-0 left-0 w-full h-1 bg-yellow-500 rounded-b-2xl"></div>
+                </div>
+
+                {{-- Omzet --}}
+                <div class="bg-white overflow-hidden shadow-sm rounded-2xl p-6 relative group hover:shadow-md transition">
+                    <div class="text-gray-500 text-xs font-bold uppercase mb-1 tracking-wider">Omzet</div>
+                    <div class="flex justify-between items-center">
+                        <div class="text-2xl font-black text-green-600 truncate">
+                            Rp {{ number_format($revenue, 0, ',', '.') }}
+                        </div>
+                        <div class="p-3 bg-green-50 rounded-xl text-green-600 group-hover:bg-green-600 group-hover:text-white transition">💰</div>
+                    </div>
+                    <div class="absolute bottom-0 left-0 w-full h-1 bg-green-500 rounded-b-2xl"></div>
+                </div>
+            </div>
+
+            {{-- 2. GRAFIK & LIVE QUEUE --}}
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                {{-- GRAFIK RITASE PER JAM --}}
+                <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-gray-800 text-lg">📊 Statistik Trip per Jam</h3>
+                        <span class="text-xs font-mono bg-gray-100 text-gray-600 px-3 py-1 rounded-full border border-gray-200">
+                            {{ \Carbon\Carbon::parse($date)->isoFormat('dddd, D MMMM Y') }}
+                        </span>
+                    </div>
+                    <div class="relative h-80 w-full">
+                        <canvas id="ritaseChart"></canvas>
+                    </div>
+                </div>
+
+                {{-- LOG ANTRIAN (Scrollable) --}}
+                <div class="bg-white rounded-2xl shadow-sm p-6 flex flex-col border border-gray-100 h-[450px]">
+                    <div class="flex justify-between items-center mb-4 flex-shrink-0">
+                        <h3 class="font-bold text-gray-800 text-lg">🚦 Log Antrian</h3>
+                        @if($date == date('Y-m-d'))
+                            <span class="bg-green-100 text-green-700 text-[10px] px-2 py-1 rounded-full font-bold animate-pulse border border-green-200">LIVE</span>
+                        @else
+                            <span class="bg-gray-100 text-gray-600 text-[10px] px-2 py-1 rounded-full border border-gray-200">ARSIP</span>
+                        @endif
+                    </div>
+                    
+                    <div class="flex-grow space-y-3 overflow-y-auto pr-2 custom-scrollbar">
+                        @forelse($queues as $q)
+                            <div class="border rounded-xl p-3 flex justify-between items-center transition hover:shadow-sm {{ $q->status == 'dipanggil' ? 'bg-green-50 border-green-200' : 'bg-white border-gray-100' }}">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="font-black text-lg {{ $q->status == 'dipanggil' ? 'text-green-700' : 'text-gray-800' }}">#{{ $q->queue_number }}</span>
+                                        @if($q->status == 'dipanggil')
+                                            <span class="text-[10px] bg-green-500 text-white px-2 py-0.5 rounded-full font-bold">DIPANGGIL</span>
+                                        @elseif($q->status == 'selesai')
+                                            <span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-bold">SELESAI</span>
+                                        @else
+                                            <span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full font-bold">MENUNGGU</span>
+                                        @endif
+                                    </div>
+                                    <p class="text-sm font-bold text-gray-700 leading-tight">{{ $q->user->name ?? 'Driver' }}</p>
+                                    <p class="text-[10px] text-gray-400 font-mono mt-0.5">{{ $q->user->nopol ?? '-' }}</p>
+                                </div>
+
+                                {{-- Tombol Dispatch (Hanya muncul jika tanggal HARI INI dan status MENUNGGU) --}}
+                                @if($date == date('Y-m-d') && $q->status == 'menunggu')
                                     <form action="{{ route('queue.update', $q->id) }}" method="POST">
                                         @csrf
-                                        <button name="status" value="dipanggil" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-4 rounded-lg shadow-lg shadow-blue-200 transition">
+                                        <input type="hidden" name="status" value="dipanggil">
+                                        <button class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-4 rounded-lg shadow-sm transition transform active:scale-95">
                                             PANGGIL
                                         </button>
                                     </form>
-                                @elseif($q->status == 'dipanggil')
-                                    <a href="{{ route('ritase.create', $q->id) }}" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2 px-4 rounded-lg shadow-lg shadow-green-200 transition flex items-center gap-1">
-                                        DISPATCH 🚀
-                                    </a>
                                 @endif
                             </div>
-                        </div>
-                    @empty
-                        <div class="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-                            <p class="text-gray-400 font-medium">No vehicles in queue.</p>
-                        </div>
-                    @endforelse
+                        @empty
+                            <div class="h-full flex flex-col items-center justify-center text-center text-gray-400 border-2 border-dashed border-gray-100 rounded-xl bg-gray-50">
+                                <span class="text-4xl mb-2">📭</span>
+                                <p class="text-sm">Tidak ada antrian</p>
+                                <p class="text-xs opacity-60">pada tanggal ini</p>
+                            </div>
+                        @endforelse
+                    </div>
                 </div>
+
             </div>
 
-             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 class="font-bold text-slate-800 text-lg mb-4">Recent Trips</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left text-gray-500">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                            <tr>
-                                <th class="px-4 py-3 rounded-l-lg">Driver</th>
-                                <th class="px-4 py-3">Destination</th>
-                                <th class="px-4 py-3 rounded-r-lg text-right">Time</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($recentRitases as $trip)
-                                <tr class="bg-white border-b hover:bg-gray-50">
-                                    <td class="px-4 py-3 font-medium text-gray-900">{{ $trip->user->name }}</td>
-                                    <td class="px-4 py-3">{{ $trip->tujuan }}</td>
-                                    <td class="px-4 py-3 text-right">{{ $trip->created_at->format('H:i') }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="space-y-8">
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-20 h-20 bg-yellow-100 rounded-bl-full -mr-10 -mt-10 z-0"></div>
-                <h3 class="font-bold text-slate-800 text-lg mb-4 relative z-10">Attendance Requests</h3>
-                
-                <div class="space-y-4 relative z-10">
-                    @forelse($pendingAttendances as $absen)
-                        <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden">
-                                     <img src="{{ asset('storage/' . $absen->payment_proof) }}" class="w-full h-full object-cover">
+            {{-- 3. APPROVAL REQUESTS (Pending) --}}
+            @if(isset($pendingAttendances) && $pendingAttendances->count() > 0)
+                <div class="bg-white rounded-2xl shadow-sm p-6 border border-yellow-100 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-yellow-400 opacity-10 rounded-bl-full -mr-10 -mt-10"></div>
+                    
+                    <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2 relative z-10">
+                        🔔 Permintaan Verifikasi <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full">{{ $pendingAttendances->count() }} Pending</span>
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 relative z-10">
+                        @foreach($pendingAttendances as $attendance)
+                            <div class="border border-yellow-200 bg-yellow-50/50 rounded-xl p-4 flex gap-4 items-start shadow-sm hover:shadow-md transition">
+                                {{-- Bukti Transfer --}}
+                                <div class="w-16 h-16 bg-white rounded-lg overflow-hidden flex-shrink-0 cursor-pointer shadow-sm border border-gray-100 hover:scale-105 transition" onclick="window.open('{{ asset('storage/'.$attendance->payment_proof) }}', '_blank')">
+                                    <img src="{{ asset('storage/'.$attendance->payment_proof) }}" class="w-full h-full object-cover" alt="Bukti">
                                 </div>
-                                <div>
-                                    <h4 class="font-bold text-sm">{{ $absen->user->name }}</h4>
-                                    <p class="text-xs text-gray-500">{{ $absen->created_at->format('d M, H:i') }}</p>
+                                <div class="flex-grow">
+                                    <p class="font-bold text-gray-800 text-sm">{{ $attendance->user->name }}</p>
+                                    <p class="text-xs text-gray-500 mb-3">{{ $attendance->created_at->format('H:i') }} WIB</p>
+                                    
+                                    <div class="flex gap-2">
+                                        <form action="{{ route('attendance.verify', $attendance->id) }}" method="POST" class="flex-1">
+                                            @csrf
+                                            <button class="w-full bg-green-600 text-white py-1.5 rounded-lg text-[10px] font-bold hover:bg-green-700 transition shadow-sm">TERIMA</button>
+                                        </form>
+                                        <form action="{{ route('attendance.reject', $attendance->id) }}" method="POST" class="flex-1">
+                                            @csrf
+                                            <button class="w-full bg-white border border-red-200 text-red-500 py-1.5 rounded-lg text-[10px] font-bold hover:bg-red-50 transition shadow-sm">TOLAK</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="flex gap-2">
-                                <form action="{{ route('attendance.verify', $absen->id) }}" method="POST" class="flex-1">
-                                    @csrf @method('PATCH')
-                                    <button name="status" value="verified" class="w-full bg-slate-900 hover:bg-black text-white text-xs font-bold py-2 rounded-lg">
-                                        Accept
-                                    </button>
-                                </form>
-                                <form action="{{ route('attendance.verify', $absen->id) }}" method="POST" class="flex-1">
-                                    @csrf @method('PATCH')
-                                    <button name="status" value="rejected" class="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-bold py-2 rounded-lg">
-                                        Deny
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    @empty
-                        <p class="text-sm text-gray-400 text-center py-4">All clear! No requests.</p>
-                    @endforelse
+                        @endforeach
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
-
     </div>
 
+    {{-- SCRIPT CHART --}}
     <script>
-        setTimeout(function(){
-           window.location.reload(1);
-        }, 30000); 
+        const ctx = document.getElementById('ritaseChart').getContext('2d');
+        
+        // Gradient untuk Chart
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(79, 70, 229, 0.5)'); // Indigo
+        gradient.addColorStop(1, 'rgba(79, 70, 229, 0.05)');
+
+        const myChart = new Chart(ctx, {
+            type: 'line', // Ganti ke Line atau Bar sesuai selera, Line lebih elegan
+            data: {
+                labels: @json($hours), 
+                datasets: [{
+                    label: 'Trip',
+                    data: @json($chartCounts),
+                    backgroundColor: gradient,
+                    borderColor: '#4f46e5',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#4f46e5',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true,
+                    tension: 0.4 // Membuat garis melengkung halus
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#111827',
+                        titleColor: '#f3f4f6',
+                        bodyColor: '#f3f4f6',
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return '🚕 ' + context.raw + ' Trip Selesai';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { borderDash: [2, 4], color: '#f3f4f6', drawBorder: false },
+                        ticks: { stepSize: 1, color: '#9ca3af', font: {family: "'Inter', sans-serif", size: 11} }
+                    },
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: { color: '#9ca3af', maxTicksLimit: 8, font: {family: "'Inter', sans-serif", size: 11} }
+                    }
+                }
+            }
+        });
     </script>
+
+    {{-- CSS Tambahan untuk Scrollbar Halus --}}
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+    </style>
 </x-app-layout>

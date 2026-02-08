@@ -12,7 +12,10 @@ class Ritase extends Model
     protected $fillable = [
         'user_id',
         'queue_id',
-        'tujuan',
+        'foto_bukti',
+        'lokasi_jemput',
+        'lokasi_tujuan',
+        'pendapatan',
         'keterangan',
         'waktu_berangkat',
     ];

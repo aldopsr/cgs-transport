@@ -13,7 +13,7 @@
             <h3 class="font-black text-2xl text-gray-800">{{ $user->name }}</h3>
             <p class="text-gray-500 text-sm">{{ $user->email }}</p>
             <div class="mt-4 inline-block bg-indigo-50 text-indigo-700 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
-                Driver Logistik
+                Driver
             </div>
         </div>
 
@@ -21,6 +21,10 @@
             <div class="p-4 border-b border-gray-100 flex items-center justify-between">
                 <span class="text-gray-500 text-sm">Plat Nomor</span>
                 <span class="font-bold text-gray-800 font-mono text-lg bg-yellow-100 px-2 rounded">{{ $user->nopol }}</span>
+            </div>
+            <div class="p-4 border-b border-gray-100 flex items-center justify-between">
+                <span class="text-gray-500 text-sm">No.Hp</span>
+                <span class="font-bold text-gray-800 font-mono text-lg px-2 rounded">{{ $user->phone }}</span>
             </div>
             <div class="p-4 border-b border-gray-100 flex items-center justify-between">
                 <span class="text-gray-500 text-sm">Status Akun</span>
