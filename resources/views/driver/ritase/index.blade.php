@@ -13,7 +13,6 @@
     <div class="py-6 pb-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
             
-            {{-- SECTION FILTER TANGGAL --}}
             <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
                 <p class="text-xs font-bold text-indigo-600 mb-2 uppercase tracking-wide">🔍 Cari Riwayat</p>
                 <form action="{{ route('driver.ritase.index') }}" method="GET" class="space-y-3">
@@ -43,7 +42,6 @@
                 </form>
             </div>
 
-            {{-- SECTION DAFTAR RIWAYAT --}}
             <div class="space-y-3">
                 @forelse($ritases as $ritase)
                     <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 relative overflow-hidden">
@@ -61,7 +59,6 @@
                                     </span>
                                 </div>
                                 
-                                {{-- Menampilkan Tujuan (Jika ada kolom tujuan) atau Nomor Antrian --}}
                                 <h3 class="font-bold text-gray-800 text-base">
                                     {{ $ritase->tujuan ?? 'Ritase Reguler' }}
                                 </h3>
@@ -90,7 +87,6 @@
                 @endforelse
             </div>
 
-            {{-- PAGINATION --}}
             <div class="pt-4 pb-8">
                 {{ $ritases->withQueryString()->links() }}
             </div>

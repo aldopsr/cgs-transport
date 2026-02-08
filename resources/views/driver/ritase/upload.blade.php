@@ -17,7 +17,6 @@
             </div>
             
             <div class="p-6">
-                {{-- Tampilkan Error jika ada --}}
                 @if ($errors->any())
                     <div class="bg-red-100 text-red-700 p-3 rounded-xl text-xs mb-4">
                         <ul>

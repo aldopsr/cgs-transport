@@ -18,7 +18,6 @@
         $revenueToday = $ritaseQuery->sum('pendapatan');
     @endphp
 
-    {{-- HEADER BIRU --}}
     <div class="bg-indigo-600 pt-8 pb-20 rounded-b-[3rem] px-6 shadow-xl relative overflow-hidden">
         {{-- Hiasan Background --}}
         <div class="absolute top-0 right-0 -mr-10 -mt-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
@@ -44,16 +43,13 @@
 
     <div class="px-5 -mt-14 pb-24 relative z-20 space-y-6">
 
-        {{-- CARD STATISTIK (Trip, Duit, Status) --}}
         <div class="bg-white rounded-3xl shadow-lg p-5 grid grid-cols-3 divide-x divide-gray-100 items-center">
             
-            {{-- Kolom 1: Trip --}}
             <div class="text-center px-1">
                 <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Total Trip</p>
                 <p class="text-2xl font-black text-gray-800">{{ $ritaseCount }}</p>
             </div>
 
-            {{-- Kolom 2: Pendapatan --}}
             <div class="text-center px-1">
                 <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Omzet</p>
                 <p class="text-lg font-black text-green-600 truncate">
@@ -61,7 +57,6 @@
                 </p>
             </div>
 
-            {{-- Kolom 3: Status --}}
             <div class="text-center px-1 flex flex-col items-center justify-center h-full">
                 <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Status</p>
                 @if(!$attendance) 
@@ -76,10 +71,8 @@
             </div>
         </div>
 
-        {{-- LOGIC FLOW UTAMA --}}
         @if(!$attendance || $attendance->status != 'verified')
             
-            {{-- CASE 1: BELUM ABSEN --}}
             <div class="bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100">
                 @if(!$attendance || $attendance->status == 'rejected')
                     <div class="bg-gray-50 p-4 border-b border-gray-100 text-center">
@@ -101,7 +94,6 @@
                         </form>
                     </div>
                 @else
-                    {{-- CASE 2: MENUNGGU VERIFIKASI ABSEN --}}
                     <div class="p-8 text-center">
                         <div class="inline-block p-4 rounded-full bg-yellow-50 mb-3 animate-pulse">
                             <span class="text-4xl">⏳</span>
@@ -114,10 +106,7 @@
             </div>
 
         @else
-
-            {{-- CASE 3: SUDAH KERJA (ABSEN OK) --}}
             
-            {{-- BAGIAN ANTRIAN --}}
             @if($activeQueue)
                 <div class="bg-white rounded-3xl shadow-xl overflow-hidden text-center relative border border-gray-100">
                     <div class="{{ $activeQueue->status == 'dipanggil' ? 'bg-green-500' : 'bg-indigo-600' }} py-3 px-4 flex justify-between items-center">
@@ -128,7 +117,6 @@
                     </div>
                     
                     <div class="py-10 relative">
-                        {{-- Watermark Background --}}
                         <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-9xl text-gray-50 font-black select-none pointer-events-none z-0">
                             {{ $activeQueue->queue_number }}
                         </span>
@@ -139,7 +127,6 @@
 
                     <div class="px-5 pb-6">
                         @if($activeQueue->status == 'dipanggil')
-                            {{-- MODAL ACTIVE: DIPANGGIL --}}
                             <div class="bg-green-50 text-green-800 p-5 rounded-2xl border border-green-200 shadow-inner">
                                 <div class="animate-bounce mb-4 text-center">
                                     <p class="font-black text-xl">📢 SEGERA MASUK!</p>
@@ -156,7 +143,6 @@
                                 </a>
                             </div>
                         @else
-                            {{-- MENUNGGU --}}
                             <div class="bg-gray-50 text-gray-500 p-4 rounded-xl border border-gray-200 flex items-center justify-center gap-3">
                                 <div class="w-2 h-2 bg-gray-400 rounded-full animate-ping"></div>
                                 <div>
@@ -171,7 +157,6 @@
 
             @else
                 
-                {{-- TOMBOL AMBIL ANTRIAN (Jika tidak ada antrian aktif) --}}
                 @if(session('success'))
                     <div class="bg-green-100 border-l-4 border-green-500 text-green-700 px-4 py-3 rounded-xl text-sm font-bold shadow-sm flex justify-between items-center">
                         <span>{{ session('success') }}</span>
@@ -203,23 +188,18 @@
 
             @endif
 
-            {{-- MENU GRID (Profil, Riwayat, Refresh) --}}
-            {{-- Ditaruh di sini agar TETAP MUNCUL meski sedang antri --}}
             <div class="grid grid-cols-3 gap-3 mt-2">
                 
-                {{-- Profil --}}
                 <a href="{{ route('driver.profile') }}" class="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center gap-1 active:bg-gray-50 hover:border-indigo-100 transition">
                     <div class="w-8 h-8 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-lg">👤</div>
                     <span class="text-[10px] font-bold text-gray-600">Profil</span>
                 </a>
 
-                {{-- Riwayat (NEW) --}}
                 <a href="{{ route('driver.ritase.index') }}" class="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center gap-1 active:bg-gray-50 hover:border-indigo-100 transition">
                     <div class="w-8 h-8 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center text-lg">📜</div>
                     <span class="text-[10px] font-bold text-gray-600">Riwayat</span>
                 </a>
 
-                {{-- Refresh --}}
                 <a href="{{ route('dashboard') }}" class="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center gap-1 active:bg-gray-50 hover:border-indigo-100 transition">
                     <div class="w-8 h-8 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center text-lg">🔄</div>
                     <span class="text-[10px] font-bold text-gray-600">Refresh</span>

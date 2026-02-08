@@ -201,20 +201,15 @@
     {{-- Script untuk Modal --}}
     <script>
         function openEditModal(id, imageSrc, jemput, tujuan, harga) {
-            // 1. Set Gambar
             document.getElementById('modalImage').src = imageSrc;
             
-            // 2. Set Nilai Form (Jika null/kosong, set string kosong)
             document.getElementById('inputPendapatan').value = harga || 0;
             document.getElementById('inputJemput').value = jemput || '';
             document.getElementById('inputTujuan').value = tujuan || '';
 
-            // 3. Set Action Form supaya update ke ID yang benar
-            // Ganti 'ID_PLACEHOLDER' dengan id data asli
             let url = "{{ route('ritase.update.admin', 'ID_PLACEHOLDER') }}";
             document.getElementById('updateForm').action = url.replace('ID_PLACEHOLDER', id);
 
-            // 4. Tampilkan Modal
             document.getElementById('editModal').classList.remove('hidden');
         }
 
@@ -222,7 +217,6 @@
             document.getElementById('editModal').classList.add('hidden');
         }
 
-        // Close on ESC
         document.onkeydown = function(evt) {
             if (evt.keyCode == 27) closeModal();
         };

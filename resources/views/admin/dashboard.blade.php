@@ -1,8 +1,6 @@
 <x-app-layout>
-    {{-- Load Chart.js --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    {{-- KITA HAPUS x-slot header KARENA TIDAK MUNCUL DI TEMPLATE KAMU --}}
     
     <div class="py-6"> {{-- Padding disesuaikan --}}
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
@@ -29,12 +27,9 @@
                     </div>
                 </form>
             </div>
-            {{-- =============================================================== --}}
 
-            {{-- 1. KARTU STATISTIK --}}
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 
-                {{-- Antrian Total --}}
                 <div class="bg-white overflow-hidden shadow-sm rounded-2xl p-6 relative group hover:shadow-md transition">
                     <div class="text-gray-500 text-xs font-bold uppercase mb-1 tracking-wider">Total Antrian</div>
                     <div class="flex justify-between items-center">
@@ -44,7 +39,6 @@
                     <div class="absolute bottom-0 left-0 w-full h-1 bg-blue-500 rounded-b-2xl"></div>
                 </div>
 
-                {{-- Trip Selesai --}}
                 <div class="bg-white overflow-hidden shadow-sm rounded-2xl p-6 relative group hover:shadow-md transition">
                     <div class="text-gray-500 text-xs font-bold uppercase mb-1 tracking-wider">Trip Selesai</div>
                     <div class="flex justify-between items-center">
@@ -54,7 +48,6 @@
                     <div class="absolute bottom-0 left-0 w-full h-1 bg-purple-500 rounded-b-2xl"></div>
                 </div>
 
-                {{-- Driver Aktif --}}
                 <div class="bg-white overflow-hidden shadow-sm rounded-2xl p-6 relative group hover:shadow-md transition">
                     <div class="text-gray-500 text-xs font-bold uppercase mb-1 tracking-wider">Driver Aktif</div>
                     <div class="flex justify-between items-center">
@@ -64,7 +57,6 @@
                     <div class="absolute bottom-0 left-0 w-full h-1 bg-yellow-500 rounded-b-2xl"></div>
                 </div>
 
-                {{-- Omzet --}}
                 <div class="bg-white overflow-hidden shadow-sm rounded-2xl p-6 relative group hover:shadow-md transition">
                     <div class="text-gray-500 text-xs font-bold uppercase mb-1 tracking-wider">Omzet</div>
                     <div class="flex justify-between items-center">
@@ -93,7 +85,6 @@
                     </div>
                 </div>
 
-                {{-- LOG ANTRIAN (Scrollable) --}}
                 <div class="bg-white rounded-2xl shadow-sm p-6 flex flex-col border border-gray-100 h-[450px]">
                     <div class="flex justify-between items-center mb-4 flex-shrink-0">
                         <h3 class="font-bold text-gray-800 text-lg">🚦 Log Antrian</h3>
@@ -122,7 +113,6 @@
                                     <p class="text-[10px] text-gray-400 font-mono mt-0.5">{{ $q->user->nopol ?? '-' }}</p>
                                 </div>
 
-                                {{-- Tombol Dispatch (Hanya muncul jika tanggal HARI INI dan status MENUNGGU) --}}
                                 @if($date == date('Y-m-d') && $q->status == 'menunggu')
                                     <form action="{{ route('queue.update', $q->id) }}" method="POST">
                                         @csrf
@@ -145,7 +135,6 @@
 
             </div>
 
-            {{-- 3. APPROVAL REQUESTS (Pending) --}}
             @if(isset($pendingAttendances) && $pendingAttendances->count() > 0)
                 <div class="bg-white rounded-2xl shadow-sm p-6 border border-yellow-100 relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-20 h-20 bg-yellow-400 opacity-10 rounded-bl-full -mr-10 -mt-10"></div>
@@ -194,7 +183,7 @@
         gradient.addColorStop(1, 'rgba(79, 70, 229, 0.05)');
 
         const myChart = new Chart(ctx, {
-            type: 'line', // Ganti ke Line atau Bar sesuai selera, Line lebih elegan
+            type: 'line', 
             data: {
                 labels: @json($hours), 
                 datasets: [{
@@ -209,7 +198,7 @@
                     pointRadius: 4,
                     pointHoverRadius: 6,
                     fill: true,
-                    tension: 0.4 // Membuat garis melengkung halus
+                    tension: 0.4 
                 }]
             },
             options: {
@@ -246,7 +235,6 @@
         });
     </script>
 
-    {{-- CSS Tambahan untuk Scrollbar Halus --}}
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
