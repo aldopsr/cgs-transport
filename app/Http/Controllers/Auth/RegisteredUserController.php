@@ -32,15 +32,17 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'nopol' => ['required', 'string', 'max:20'], // Tambahkan Validasi Nopol
+            'phone' => ['required', 'string', 'max:15'],
+            'nopol' => ['required', 'string', 'max:20'], 
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'nopol' => strtoupper($request->nopol), // Simpan Nopol (Huruf Besar Otomatis)
-            'role' => 'driver', // Set default role sebagai Driver
+            'phone' => $request->phone,
+            'nopol' => strtoupper($request->nopol), 
+            'role' => 'driver', 
             'password' => Hash::make($request->password),
         ]);
 

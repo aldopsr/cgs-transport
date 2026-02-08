@@ -38,6 +38,7 @@ class DriverController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,'.$driver->id,
+            'phone' => ['required', 'string', 'max:15'],
             'nopol' => 'required|string|max:20',
             'password' => 'nullable|min:8', 
         ]);
@@ -45,6 +46,7 @@ class DriverController extends Controller
         $data = [
             'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
             'nopol' => $request->nopol,
         ];
 

@@ -25,6 +25,13 @@
                 </div>
 
                 <div class="mb-4">
+                    <label class="block text-sky-200 text-xs font-bold uppercase mb-1">No.Hp</label>
+                    <input type="phone" name="phone" :value="old('phone')" required 
+                        class="w-full bg-slate-800/50 border border-slate-600 text-white rounded-xl px-4 py-3 focus:ring-sky-500 placeholder-slate-500" placeholder="0812345678">
+                    <x-input-error :messages="$errors->get('email')" class="mt-2 text-red-400 text-xs" />
+                </div>
+
+                <div class="mb-4">
                     <label class="block text-sky-200 text-xs font-bold uppercase mb-1">Plat Nomor Kendaraan</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">🚗</span>
