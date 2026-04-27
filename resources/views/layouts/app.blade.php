@@ -3,7 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"> <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'CGS System') }}</title>
+    <title>{{ config('app.name', 'CSG System') }}</title>
+    <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0d6efd">
     
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
@@ -23,7 +25,7 @@
         <aside class="w-64 bg-[#0f172a] text-white flex flex-col shadow-2xl z-50 hidden md:flex">
             <div class="p-6">
                 <h1 class="text-2xl font-black tracking-tighter text-blue-500">
-                    CGS <span class="text-white">AIRPORT</span>
+                    CSG <span class="text-white">AIRPORT</span>
                 </h1>
                 <p class="text-xs text-slate-500 font-medium tracking-widest mt-1">OPERATING SYSTEM</p>
             </div>
@@ -43,9 +45,13 @@
                     <span class="font-medium text-sm">Laporan</span>
                 </a>
 
-                <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('profile.*') ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-800' }}">
-                    <span class="font-medium text-sm">Pengaturan</span>
+                <a href="{{ route('admin.attendance.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('admin.attendance.*') ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-800' }}">
+                    <span class="font-medium text-sm">Absensi</span>
                 </a>
+
+                <!-- <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all {{ request()->routeIs('profile.*') ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-800' }}">
+                    <span class="font-medium text-sm">Pengaturan</span>
+                </a> -->
             </nav>
 
             <div class="p-4 border-t border-slate-800 mt-auto">
@@ -67,7 +73,7 @@
                      </div>
                      <div class="fixed top-0 inset-x-0 z-50 bg-[#0f172a] px-5 py-3 shadow-xl border-b border-slate-800 flex justify-between items-center">
         <div>
-            <p class="text-blue-500 text-[10px] font-bold tracking-[0.2em] uppercase leading-tight">PT. CGS</p>
+            <p class="text-blue-500 text-[10px] font-bold tracking-[0.2em] uppercase leading-tight">PT. CSG</p>
             <h1 class="text-white text-lg font-black tracking-tighter leading-none mt-0.5">OPERATIONS</h1>
         </div>
     </div>
@@ -87,5 +93,11 @@
             </main>
         </div>
     </div>
+    <script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+    .then(() => console.log('Service Worker Registered'));
+}
+</script>
 </body>
 </html>

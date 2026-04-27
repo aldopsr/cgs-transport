@@ -17,11 +17,11 @@
                 @csrf
 
                 <div class="mb-5">
-                    <label for="email" class="block text-sky-200 text-xs font-bold uppercase mb-2">Email Driver</label>
-                    <input id="email" type="email" name="email" :value="old('email')" required autofocus 
+                    <label for="identifier" class="block text-sky-200 text-xs font-bold uppercase mb-2">No. HP / Plat Nomor</label>
+                    <input id="identifier" type="text" name="identifier" :value="old('identifier')" required autofocus 
                         class="w-full bg-slate-800/50 border border-slate-600 text-white rounded-xl px-4 py-3 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 placeholder-slate-500 transition"
-                        placeholder="nama@email.com">
-                    <x-input-error :messages="$errors->get('email')" class="mt-2 text-red-400 text-xs" />
+                        placeholder="Contoh: 0812xxx atau B1234XX">
+                    <x-input-error :messages="$errors->get('identifier')" class="mt-2 text-red-400 text-xs" />
                 </div>
 
                 <div class="mb-6">
@@ -32,17 +32,11 @@
                     <x-input-error :messages="$errors->get('password')" class="mt-2 text-red-400 text-xs" />
                 </div>
 
-                <div class="flex items-center justify-between mb-6">
-                    <label for="remember_me" class="inline-flex items-center">
-                        <input id="remember_me" type="checkbox" class="rounded bg-slate-700 border-slate-600 text-sky-500 focus:ring-sky-500" name="remember">
-                        <span class="ml-2 text-sm text-slate-300">Ingat Saya</span>
+                <div class="flex items-center mb-6">
+                    <label for="remember_me" class="inline-flex items-center cursor-pointer group">
+                        <input id="remember_me" type="checkbox" class="rounded bg-slate-700 border-slate-600 text-sky-500 focus:ring-sky-500 cursor-pointer" name="remember">
+                        <span class="ml-2 text-sm text-slate-300 group-hover:text-white transition">Ingat Saya di Perangkat Ini</span>
                     </label>
-                    
-                    @if (Route::has('password.request'))
-                        <a class="text-sm text-sky-400 hover:text-sky-300 font-bold" href="{{ route('password.request') }}">
-                            Lupa sandi?
-                        </a>
-                    @endif
                 </div>
 
                 <button class="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold py-4 rounded-xl shadow-lg transform active:scale-95 transition">
@@ -51,7 +45,7 @@
 
                 <div class="mt-6 text-center">
                     <p class="text-slate-400 text-sm">Belum punya akun?</p>
-                    <a href="{{ route('register') }}" class="text-sky-400 hover:text-white font-bold text-sm">
+                    <a href="{{ route('register') }}" class="text-sky-400 hover:text-white font-bold text-sm transition">
                         Daftar Mitra Baru
                     </a>
                 </div>

@@ -50,4 +50,21 @@ class AttendanceController extends Controller
 
         return redirect()->back()->with('error', 'Absensi Ditolak.');
     }
+
+    // Tambahkan fungsi ini di dalam AttendanceController
+    public function index(Request $request)
+    {
+        // Ambil data absensi beserta relasi user-nya, urutkan dari yang terbaru
+        $query = Attendance::with('user')->orderBy('date', 'desc')->orderBy('created_at', 'desc');
+
+        // Fitur Filter Tanggal (Opsional, sangat berguna buat admin)
+        if ($request->filled('date')) {
+            $query->where('date', $request->date);
+        }
+
+        // Gunakan pagination agar halaman tidak berat jika datanya ribuan
+        $attendances = $query->paginate(15);
+
+        return view('admin.attendance.index', compact('attendances'));
+    }
 }

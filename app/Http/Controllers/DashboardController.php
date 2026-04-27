@@ -18,7 +18,8 @@ class DashboardController extends Controller
         // DRIVER
         if ($user->role === 'driver') {
             $myQueue = Queue::where('user_id', $user->id)
-                            ->whereIn('status', ['menunggu', 'dipanggil'])
+                            // Tambahkan 'siap_siap' di dalam kurung siku ini 👇
+                            ->whereIn('status', ['menunggu', 'siap_siap', 'dipanggil'])
                             ->first();
             
             $todayRevenue = Ritase::where('user_id', $user->id)

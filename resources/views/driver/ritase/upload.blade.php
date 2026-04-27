@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="fixed top-0 inset-x-0 z-50 bg-[#0f172a] px-5 py-3 shadow-xl border-b border-slate-800 flex justify-between items-center">
         <div>
-            <p class="text-blue-500 text-[10px] font-bold tracking-[0.2em] uppercase leading-tight">PT. CGS</p>
+            <p class="text-blue-500 text-[10px] font-bold tracking-[0.2em] uppercase leading-tight">PT. CSG</p>
             <h1 class="text-white text-lg font-black tracking-tighter leading-none mt-0.5">UPLOAD BUKTI</h1>
         </div>
         <a href="{{ route('dashboard') }}" class="text-slate-400 text-xs font-bold">Batal</a>
@@ -13,7 +13,6 @@
         <div class="bg-white rounded-3xl shadow-lg overflow-hidden border border-slate-100">
             <div class="bg-blue-50 p-4 border-b border-blue-100 text-center">
                 <h3 class="text-blue-800 font-bold text-sm">📸 Foto Struk / Aplikasi</h3>
-                <p class="text-xs text-blue-600">Sistem akan membaca otomatis lokasi & harga.</p>
             </div>
             
             <div class="p-6">

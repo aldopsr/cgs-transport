@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             
-            // --- Custom Field Project CGS ---
+            // --- Custom Field Project CSG ---
             $table->enum('role', ['admin', 'driver'])->default('driver');
             $table->string('nopol')->nullable(); // Plat nomor
             $table->string('phone')->nullable(); // No HP

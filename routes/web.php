@@ -18,6 +18,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+Route::get('/admin/absensi/riwayat', [App\Http\Controllers\AttendanceController::class, 'index'])->name('admin.attendance.index');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -35,7 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/attendance/{id}/reject', [AttendanceController::class, 'reject'])->name('attendance.reject'); // Ubah jadi PATCH
 
     Route::post('/queue/store', [QueueController::class, 'store'])->name('queue.store');
-    Route::post('/queue/{id}/update', [QueueController::class, 'update'])->name('queue.update');
+    Route::put('/queue/{id}/update', [QueueController::class, 'update'])->name('queue.update');
 
     Route::get('/ritase/create/{queue_id}', [RitaseController::class, 'create'])->name('ritase.create');
     Route::post('/ritase/store', [RitaseController::class, 'store'])->name('ritase.store');

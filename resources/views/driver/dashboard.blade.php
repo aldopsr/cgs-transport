@@ -6,10 +6,10 @@
         // Cek Absensi
         $attendance = App\Models\Attendance::where('user_id', $user_id)->where('date', $today)->first();
         
-        // Cek Antrian Aktif
+        // Cek Antrian Aktif (Ditambahkan 'siap_siap' di sini)
         $activeQueue = App\Models\Queue::where('user_id', $user_id)
                         ->whereDate('created_at', $today)
-                        ->whereIn('status', ['menunggu', 'dipanggil'])
+                        ->whereIn('status', ['menunggu', 'siap_siap', 'dipanggil']) 
                         ->first();
 
         // Ambil Data Ritase Hari Ini (Jumlah & Total Duit)
@@ -33,9 +33,13 @@
                 </div>
             </div>
             
-            <a href="{{ route('driver.profile') }}" class="bg-white/10 p-1.5 rounded-full backdrop-blur-sm border border-white/20 active:bg-white/20 transition shadow-lg">
-                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-indigo-600 font-bold shadow-inner text-lg">
-                    {{ substr(Auth::user()->name, 0, 1) }}
+            <a href="{{ route('driver.profile') }}" class="bg-white/10 p-1.5 rounded-full backdrop-blur-sm border border-white/20 active:bg-white/20 transition shadow-lg shrink-0">
+                <div class="w-11 h-11 bg-white rounded-full flex items-center justify-center text-indigo-600 font-bold shadow-inner text-lg overflow-hidden">
+                    @if(Auth::user()->photo)
+                        <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Foto" class="w-full h-full object-cover">
+                    @else
+                        {{ substr(Auth::user()->name, 0, 1) }}
+                    @endif
                 </div>
             </a>
         </div>
@@ -108,14 +112,23 @@
         @else
             
             @if($activeQueue)
+                {{-- KOTAK ANTRIAN AKTIF --}}
                 <div class="bg-white rounded-3xl shadow-xl overflow-hidden text-center relative border border-gray-100">
-                    <div class="{{ $activeQueue->status == 'dipanggil' ? 'bg-green-500' : 'bg-indigo-600' }} py-3 px-4 flex justify-between items-center">
-                        <p class="text-white text-[10px] font-bold uppercase tracking-widest opacity-90">Nomor Antrian</p>
+                    
+                    {{-- HEADER ANTRIAN --}}
+                    <div class="{{ $activeQueue->status == 'dipanggil' ? 'bg-green-500' : ($activeQueue->status == 'siap_siap' ? 'bg-yellow-500' : 'bg-indigo-600') }} py-3 px-4 flex justify-between items-center transition-colors duration-300">
+                        <p class="{{ $activeQueue->status == 'siap_siap' ? 'text-yellow-900' : 'text-white' }} text-[10px] font-bold uppercase tracking-widest opacity-90">Nomor Antrian</p>
+                        
                         @if($activeQueue->status == 'menunggu')
                             <span class="bg-white/20 text-white text-[10px] px-2 py-0.5 rounded-full">Menunggu</span>
+                        @elseif($activeQueue->status == 'siap_siap')
+                            <span class="bg-white/30 text-yellow-900 text-[10px] px-2 py-0.5 rounded-full font-bold">Siap-Siap</span>
+                        @elseif($activeQueue->status == 'dipanggil')
+                            <span class="bg-white/20 text-white text-[10px] px-2 py-0.5 rounded-full animate-pulse">Dipanggil</span>
                         @endif
                     </div>
                     
+                    {{-- ANGKA ANTRIAN --}}
                     <div class="py-10 relative">
                         <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-9xl text-gray-50 font-black select-none pointer-events-none z-0">
                             {{ $activeQueue->queue_number }}
@@ -125,6 +138,7 @@
                         </span>
                     </div>
 
+                    {{-- ISI KONTEN (Pesan dan Tombol) --}}
                     <div class="px-5 pb-6">
                         @if($activeQueue->status == 'dipanggil')
                             <div class="bg-green-50 text-green-800 p-5 rounded-2xl border border-green-200 shadow-inner">
@@ -132,7 +146,6 @@
                                     <p class="font-black text-xl">📢 SEGERA MASUK!</p>
                                     <p class="text-xs opacity-80">Giliran Anda muat penumpang.</p>
                                 </div>
-
                                 <a href="{{ route('driver.ritase.create') }}" class="group block w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-green-200 hover:shadow-green-300 transition-all active:scale-95 flex items-center justify-center gap-3">
                                     <span class="bg-white/20 p-1 rounded text-lg">📸</span> 
                                     <div class="text-left leading-tight">
@@ -142,6 +155,18 @@
                                     <span class="text-green-100 group-hover:translate-x-1 transition">→</span>
                                 </a>
                             </div>
+
+                        @elseif($activeQueue->status == 'siap_siap')
+                            <div class="bg-yellow-50 text-yellow-800 p-5 rounded-2xl border border-yellow-300 shadow-inner">
+                                <div class="animate-pulse flex flex-col items-center justify-center text-center">
+                                    <span class="text-4xl mb-2">⚠️</span>
+                                    <p class="font-black text-lg">SIAP-SIAP!</p>
+                                    <p class="text-xs font-medium mt-1">Giliran Anda sebentar lagi. Silakan nyalakan mesin dan bersiap.</p>
+                                    <p class="text-[10px] text-yellow-600 mt-3">Layar refresh otomatis tiap 15 detik</p>
+                                </div>
+                            </div>
+                            <script>setTimeout(function(){window.location.reload(1);}, 15000);</script>
+
                         @else
                             <div class="bg-gray-50 text-gray-500 p-4 rounded-xl border border-gray-200 flex items-center justify-center gap-3">
                                 <div class="w-2 h-2 bg-gray-400 rounded-full animate-ping"></div>

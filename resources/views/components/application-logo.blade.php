@@ -3,6 +3,6 @@
         ✈️
     </div>
     <span class="font-black text-xl tracking-tight text-gray-800">
-        CGS <span class="text-indigo-600">TRANS</span>
+        CSG <span class="text-indigo-600">TRANS</span>
     </span>
 </div>

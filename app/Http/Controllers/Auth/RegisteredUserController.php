@@ -35,7 +35,16 @@ class RegisteredUserController extends Controller
             'phone' => ['required', 'string', 'max:15'],
             'nopol' => ['required', 'string', 'max:20'], 
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            // Validasi tambahan untuk foto: wajib, harus gambar, max 5MB
+            'photo' => ['required', 'image', 'mimes:jpeg,png,jpg', 'max:5120'], 
         ]);
+
+        // Proses penyimpanan foto
+        $photoPath = null;
+        if ($request->hasFile('photo')) {
+            // Akan tersimpan di folder: storage/app/public/driver_photos/
+            $photoPath = $request->file('photo')->store('driver_photos', 'public');
+        }
 
         $user = User::create([
             'name' => $request->name,
@@ -44,6 +53,8 @@ class RegisteredUserController extends Controller
             'nopol' => strtoupper($request->nopol), 
             'role' => 'driver', 
             'password' => Hash::make($request->password),
+            // Simpan path foto ke database
+            'photo' => $photoPath,
         ]);
 
         event(new Registered($user));

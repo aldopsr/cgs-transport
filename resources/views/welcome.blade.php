@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>PT CGS - Airport Transport</title>
+        <title>PT CSG - Airport Transport</title>
 
         <linkpreconnect="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,600,800&display=swap" rel="stylesheet" />
@@ -31,7 +31,7 @@
                 </div>
                 
                 <h1 class="text-3xl font-black tracking-tight text-white mb-1">
-                    PT CGS
+                    PT CSG
                     <span class="text-sky-400">TRANS</span>
                 </h1>
                 <p class="text-sky-200 text-xs font-bold tracking-[0.2em] uppercase">Soekarno-Hatta Airport Service</p>
@@ -81,7 +81,7 @@
 
                 <div class="text-center pt-8 opacity-60">
                     <p class="text-[10px] text-slate-500">
-                        &copy; {{ date('Y') }} PT CGS Transportasi.<br>Soekarno-Hatta International Airport.
+                        &copy; {{ date('Y') }} PT CSG Transportasi.<br>Soekarno-Hatta International Airport.
                     </p>
                 </div>
             </div>

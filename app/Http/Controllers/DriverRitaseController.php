@@ -69,10 +69,37 @@ class DriverRitaseController extends Controller
                 'waktu_berangkat' => now(),
             ]);
 
+            // 1. Driver saat ini selesai
             $queue->update(['status' => 'selesai']);
+
+            // 🔥 2. LOGIKA OTOMATISASI: Panggil antrian berikutnya
+            $today = date('Y-m-d');
+
+            $nextToCall = Queue::whereDate('created_at', $today)
+                ->where('queue_number', '>', $queue->queue_number)
+                ->whereIn('status', ['menunggu', 'siap_siap'])
+                ->orderBy('queue_number', 'asc')
+                ->first();
+
+            if ($nextToCall) {
+                // Panggil driver berikutnya
+                $nextToCall->update(['status' => 'dipanggil']);
+                
+                // Picu 2 antrian di belakangnya untuk bersiap-siap
+                $nextQueues = Queue::whereDate('created_at', $today)
+                    ->where('queue_number', '>', $nextToCall->queue_number)
+                    ->where('status', 'menunggu')
+                    ->orderBy('queue_number', 'asc')
+                    ->limit(2)
+                    ->get();
+
+                foreach ($nextQueues as $q) {
+                    $q->update(['status' => 'siap_siap']);
+                }
+            }
         });
 
-        return redirect()->route('dashboard')->with('success', '✅ Bukti Terkirim! Data perjalanan sudah masuk.');
+        return redirect()->route('dashboard')->with('success', '✅ Bukti Terkirim! Data perjalanan sudah masuk. Antrian selanjutnya otomatis berjalan.');
     }
 
 

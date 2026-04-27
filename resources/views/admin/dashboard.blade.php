@@ -2,10 +2,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     
-    <div class="py-6"> {{-- Padding disesuaikan --}}
+    <div class="py-6"> 
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             
-            {{-- === BAGIAN BARU: JUDUL & FILTER TANGGAL (LANGSUNG DI BODY) === --}}
             <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
                 <div>
                     <h2 class="font-bold text-2xl text-gray-800">
@@ -14,7 +13,6 @@
                     <p class="text-sm text-gray-500">Ringkasan operasional bandara</p>
                 </div>
                 
-                {{-- FORM FILTER TANGGAL --}}
                 <form action="{{ route('dashboard') }}" method="GET" class="flex items-center gap-3 bg-white p-3 rounded-xl shadow-sm border border-gray-100">
                     <div class="flex flex-col">
                         <label class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Pilih Tanggal</label>
@@ -86,52 +84,79 @@
                 </div>
 
                 <div class="bg-white rounded-2xl shadow-sm p-6 flex flex-col border border-gray-100 h-[450px]">
-                    <div class="flex justify-between items-center mb-4 flex-shrink-0">
-                        <h3 class="font-bold text-gray-800 text-lg">🚦 Log Antrian</h3>
-                        @if($date == date('Y-m-d'))
-                            <span class="bg-green-100 text-green-700 text-[10px] px-2 py-1 rounded-full font-bold animate-pulse border border-green-200">LIVE</span>
+    <div class="flex justify-between items-center mb-4 flex-shrink-0">
+        <h3 class="font-bold text-gray-800 text-lg">🚦 Log Antrian</h3>
+        @if($date == date('Y-m-d'))
+            <span class="bg-green-100 text-green-700 text-[10px] px-2 py-1 rounded-full font-bold animate-pulse border border-green-200">LIVE</span>
+        @else
+            <span class="bg-gray-100 text-gray-600 text-[10px] px-2 py-1 rounded-full border border-gray-200">ARSIP</span>
+        @endif
+    </div>
+    
+    <div class="flex-grow space-y-3 overflow-y-auto pr-2 custom-scrollbar">
+        @forelse($queues as $q)
+            <div class="border rounded-xl p-3 flex justify-between items-center transition hover:shadow-sm 
+                {{ $q->status == 'dipanggil' ? 'bg-green-50 border-green-200' : 
+                   ($q->status == 'siap_siap' ? 'bg-yellow-50 border-yellow-200' : 
+                   ($q->status == 'dilewati' ? 'bg-red-50 border-red-200' : 'bg-white border-gray-100')) }}">
+                
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="font-black text-lg 
+                            {{ $q->status == 'dipanggil' ? 'text-green-700' : 
+                               ($q->status == 'dilewati' ? 'text-red-700' : 'text-gray-800') }}">
+                            #{{ $q->queue_number }}
+                        </span>
+                        
+                        {{-- LABEL STATUS --}}
+                        @if($q->status == 'dipanggil')
+                            <span class="text-[10px] bg-green-500 text-white px-2 py-0.5 rounded-full font-bold">DIPANGGIL</span>
+                        @elseif($q->status == 'selesai')
+                            <span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-bold">SELESAI</span>
+                        @elseif($q->status == 'siap_siap')
+                            <span class="text-[10px] bg-yellow-400 text-yellow-900 px-2 py-0.5 rounded-full font-bold animate-pulse">SIAP-SIAP</span>
+                        @elseif($q->status == 'dilewati')
+                            <span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold line-through">DILEWATI</span>
                         @else
-                            <span class="bg-gray-100 text-gray-600 text-[10px] px-2 py-1 rounded-full border border-gray-200">ARSIP</span>
+                            <span class="text-[10px] bg-gray-200 text-gray-700 px-2 py-0.5 rounded-full font-bold">MENUNGGU</span>
                         @endif
                     </div>
-                    
-                    <div class="flex-grow space-y-3 overflow-y-auto pr-2 custom-scrollbar">
-                        @forelse($queues as $q)
-                            <div class="border rounded-xl p-3 flex justify-between items-center transition hover:shadow-sm {{ $q->status == 'dipanggil' ? 'bg-green-50 border-green-200' : 'bg-white border-gray-100' }}">
-                                <div>
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <span class="font-black text-lg {{ $q->status == 'dipanggil' ? 'text-green-700' : 'text-gray-800' }}">#{{ $q->queue_number }}</span>
-                                        @if($q->status == 'dipanggil')
-                                            <span class="text-[10px] bg-green-500 text-white px-2 py-0.5 rounded-full font-bold">DIPANGGIL</span>
-                                        @elseif($q->status == 'selesai')
-                                            <span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-bold">SELESAI</span>
-                                        @else
-                                            <span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full font-bold">MENUNGGU</span>
-                                        @endif
-                                    </div>
-                                    <p class="text-sm font-bold text-gray-700 leading-tight">{{ $q->user->name ?? 'Driver' }}</p>
-                                    <p class="text-[10px] text-gray-400 font-mono mt-0.5">{{ $q->user->nopol ?? '-' }}</p>
-                                </div>
-
-                                @if($date == date('Y-m-d') && $q->status == 'menunggu')
-                                    <form action="{{ route('queue.update', $q->id) }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="status" value="dipanggil">
-                                        <button class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-4 rounded-lg shadow-sm transition transform active:scale-95">
-                                            PANGGIL
-                                        </button>
-                                    </form>
-                                @endif
-                            </div>
-                        @empty
-                            <div class="h-full flex flex-col items-center justify-center text-center text-gray-400 border-2 border-dashed border-gray-100 rounded-xl bg-gray-50">
-                                <span class="text-4xl mb-2">📭</span>
-                                <p class="text-sm">Tidak ada antrian</p>
-                                <p class="text-xs opacity-60">pada tanggal ini</p>
-                            </div>
-                        @endforelse
-                    </div>
+                    <p class="text-sm font-bold text-gray-700 leading-tight">{{ $q->user->name ?? 'Driver' }}</p>
+                    <p class="text-[10px] text-gray-400 font-mono mt-0.5">{{ $q->user->nopol ?? '-' }}</p>
                 </div>
+
+                {{-- TOMBOL AKSI ADMIN (Hanya muncul jika antrian hari ini dan statusnya menunggu/siap-siap) --}}
+                @if($date == date('Y-m-d') && in_array($q->status, ['menunggu', 'siap_siap']))
+                    <div class="flex flex-col gap-1">
+                        {{-- Tombol Panggil --}}
+<form action="{{ route('queue.update', $q->id) }}" method="POST">
+    @csrf
+    @method('PUT') <input type="hidden" name="status" value="dipanggil">
+    <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold py-1.5 px-3 rounded shadow-sm transition transform active:scale-95">
+        PANGGIL
+    </button>
+</form>
+
+{{-- Lakukan hal yang sama untuk tombol Skip --}}
+<form action="{{ route('queue.update', $q->id) }}" method="POST">
+    @csrf
+    @method('PUT') <input type="hidden" name="status" value="dilewati">
+    <button type="submit" ...>
+        SKIP ⏭️
+    </button>
+</form>
+                    </div>
+                @endif
+            </div>
+        @empty
+            <div class="h-full flex flex-col items-center justify-center text-center text-gray-400 border-2 border-dashed border-gray-100 rounded-xl bg-gray-50">
+                <span class="text-4xl mb-2">📭</span>
+                <p class="text-sm">Tidak ada antrian</p>
+                <p class="text-xs opacity-60">pada tanggal ini</p>
+            </div>
+        @endforelse
+    </div>
+</div>
 
             </div>
 
@@ -157,10 +182,12 @@
                                     <div class="flex gap-2">
                                         <form action="{{ route('attendance.verify', $attendance->id) }}" method="POST" class="flex-1">
                                             @csrf
+                                            @method('PATCH')
                                             <button class="w-full bg-green-600 text-white py-1.5 rounded-lg text-[10px] font-bold hover:bg-green-700 transition shadow-sm">TERIMA</button>
                                         </form>
                                         <form action="{{ route('attendance.reject', $attendance->id) }}" method="POST" class="flex-1">
                                             @csrf
+                                            @method('PATCH')
                                             <button class="w-full bg-white border border-red-200 text-red-500 py-1.5 rounded-lg text-[10px] font-bold hover:bg-red-50 transition shadow-sm">TOLAK</button>
                                         </form>
                                     </div>

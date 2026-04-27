@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User; // Tambahan wajib
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash; // Tambahan wajib
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -27,7 +29,8 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            // Email dihapus, diganti menjadi identifier
+            'identifier' => ['required', 'string'],
             'password' => ['required', 'string'],
         ];
     }
@@ -37,21 +40,40 @@ class LoginRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
+    /**
+     * Attempt to authenticate the request's credentials.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $identifier = $this->input('identifier');
+        $password = $this->input('password');
+
+        // Bersihkan input nopol (hapus spasi & ubah ke huruf kecil)
+        $cleanIdentifier = strtolower(str_replace(' ', '', $identifier));
+
+        // Cari user berdasarkan 'phone' ATAU 'nopol'
+        $user = User::where('phone', $identifier)
+            ->orWhereRaw("LOWER(REPLACE(nopol, ' ', '')) = ?", [$cleanIdentifier])
+            ->first();
+
+        // Jika user tidak ada ATAU password salah
+        if (! $user || ! Hash::check($password, $user->password)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'identifier' => __('Akun tidak ditemukan atau kata sandi salah.'),
             ]);
         }
 
+        // Login manual
+        Auth::login($user, $this->boolean('remember'));
+
         RateLimiter::clear($this->throttleKey());
     }
-
     /**
      * Ensure the login request is not rate limited.
      *
@@ -68,7 +90,8 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
+            // Email diubah ke identifier
+            'identifier' => trans('auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),
@@ -80,6 +103,7 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        // Email diubah ke identifier
+        return Str::transliterate(Str::lower($this->string('identifier')).'|'.$this->ip());
     }
 }

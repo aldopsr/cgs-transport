@@ -13,16 +13,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Bikin Akun Admin
         User::create([
             'name' => 'Admin CGS',
-            'email' => 'admin@cgs.com',
-            'password' => Hash::make('password'), // Password-nya 'password'
+            'email' => 'admin@CGS.com',
+            'password' => Hash::make('password'), 
             'role' => 'admin',
             'phone' => '081234567890',
         ]);
 
-        // 2. Bikin 1 Contoh Driver (Biar gak capek register manual)
         User::create([
             'name' => 'Budi Driver',
             'email' => 'budi@driver.com',
