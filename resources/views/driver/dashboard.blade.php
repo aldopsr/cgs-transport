@@ -146,11 +146,12 @@
                 {{-- Bagian Antrian Aktif --}}
                 @if($activeQueue)
                     <div class="bg-white rounded-[2rem] shadow-xl shadow-blue-900/5 border border-black/5 overflow-hidden">
-                        <div class="bg-[#0d1117] px-6 py-4 flex justify-between items-center">
-                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Antrian Anda</p>
+                        {{-- Header Antrian - Warna Biru Muda --}}
+                        <div class="bg-gradient-to-r from-blue-500 to-[#1a6bff] px-6 py-4 flex justify-between items-center">
+                            <p class="text-[10px] text-white/80 font-bold uppercase tracking-widest">Antrian Anda</p>
                             @php
                                 $statusStyle = [
-                                    'menunggu' => 'bg-white/10 text-white',
+                                    'menunggu' => 'bg-white/20 text-white',
                                     'siap_siap' => 'bg-yellow-400 text-black',
                                     'dipanggil' => 'bg-green-500 text-white animate-pulse'
                                 ][$activeQueue->status];
@@ -193,17 +194,15 @@
                     {{-- Tombol Ambil Antrian --}}
                     <form action="{{ route('queue.store') }}" method="POST">
                         @csrf
-                        <button class="w-full bg-[#1a6bff] rounded-[2rem] p-8 text-left shadow-xl shadow-blue-600/20 hover:shadow-2xl active:scale-[0.98] transition-all group">
-                            <div class="flex justify-between items-center">
-                                <div>
-                                    <p class="text-[10px] text-blue-100 font-bold uppercase tracking-[0.2em] mb-2 opacity-80">Standby Service</p>
-                                    <h3 class="text-3xl font-serif italic text-white">Ambil <span class="not-italic font-sans font-black">Antrian</span></h3>
-                                </div>
-                                <div class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition">
-                                    <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-width="1.5" stroke-linecap="round"/>
-                                    </svg>
-                                </div>
+                        <button class="w-full bg-[#1a6bff] rounded-2xl py-5 px-5 shadow-lg shadow-blue-600/20 hover:shadow-xl active:scale-[0.98] transition-all group flex items-center justify-between">
+                            <div class="text-left">
+                                <p class="text-[9px] text-blue-100 font-bold uppercase tracking-[0.2em] mb-1">Standby Service</p>
+                                <h3 class="text-xl font-serif italic text-white">Ambil Antrian</h3>
+                            </div>
+                            <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition">
+                                <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-width="1.5" stroke-linecap="round"/>
+                                </svg>
                             </div>
                         </button>
                     </form>
