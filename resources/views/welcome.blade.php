@@ -9,7 +9,6 @@
         {{-- Top Bar --}}
         <div class="flex items-center justify-between py-8 animate-rise">
             <x-application-logo />
-            <span class="text-[10px] font-bold text-[#1a6bff] bg-[#e8f0ff] px-3 py-1 rounded-full uppercase">CGK</span>
         </div>
 
         <div class="h-[1px] bg-black/5 mb-8 animate-rise"></div>
@@ -21,7 +20,6 @@
                 Layanan Resmi Bandara
             </div>
             
-            {{-- Ukuran dikecilkan ke text-4xl dan font-style tetap italic --}}
             <h1 class="text-4xl font-serif italic leading-[1.2] text-[#0d1117] mb-6 animate-rise">
                 Tepat Waktu,<br>Setiap <span class="text-[#1a6bff]">Saat.</span>
             </h1>
@@ -47,19 +45,31 @@
                         </x-primary-button>
                     </a>
                 @else
+                    {{-- Tombol Login dengan gradasi halus --}}
                     <a href="{{ route('login') }}" class="block">
-                        <x-primary-button>
-                            <span class="text-base">Masuk ke Akun</span>
-                            <span class="bg-white/10 w-9 h-9 flex items-center justify-center rounded-full">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        <button class="w-full bg-gradient-to-r from-[#1a6bff] to-[#0d5ae0] hover:from-[#0d5ae0] hover:to-[#1a6bff] text-white font-bold py-5 rounded-2xl shadow-lg shadow-blue-600/20 transform transition-all duration-300 hover:scale-[1.02] active:scale-95 flex items-center justify-between px-6 group">
+                            <span class="text-base tracking-wide">Masuk ke Akun</span>
+                            <span class="bg-white/20 group-hover:bg-white/30 w-9 h-9 flex items-center justify-center rounded-full transition-all duration-300">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                                </svg>
                             </span>
-                        </x-primary-button>
+                        </button>
                     </a>
 
                     @if (Route::has('register'))
-                        <p class="text-center text-[12px] text-gray-400 font-medium py-1">Belum punya akun?</p>
+                        <p class="text-center text-[12px] text-gray-400 font-medium py-2">Belum punya akun?</p>
+                        
+                        {{-- Tombol Daftar Mitra dengan border biru dan teks biru --}}
                         <a href="{{ route('register') }}" class="block">
-                            <x-secondary-button class="text-base py-5">Daftar sebagai Mitra</x-secondary-button>
+                            <button class="w-full bg-white/80 backdrop-blur-sm border-2 border-[#1a6bff] hover:border-[#0d5ae0] text-[#1a6bff] hover:text-[#0d5ae0] font-bold py-5 rounded-2xl shadow-md hover:shadow-lg transform transition-all duration-300 hover:scale-[1.01] active:scale-95 flex items-center justify-between px-6 group">
+                                <span class="text-base tracking-wide">Daftar sebagai Mitra</span>
+                                <span class="bg-[#1a6bff]/10 group-hover:bg-[#1a6bff]/20 w-9 h-9 flex items-center justify-center rounded-full transition-all duration-300">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                                    </svg>
+                                </span>
+                            </button>
                         </a>
                     @endif
                 @endauth
