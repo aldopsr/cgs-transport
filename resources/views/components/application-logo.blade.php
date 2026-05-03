@@ -1,8 +1,7 @@
-<div class="flex items-center gap-2">
-    <div class="bg-indigo-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-lg shadow-md">
-        ✈️
+<div class="flex items-center gap-3">
+    <img src="{{ asset('logo.png') }}" alt="Logo PT CSG" class="w-10 h-10 object-contain">
+    <div class="flex flex-col leading-none">
+        <strong class="text-[15px] font-bold text-[#0d1117] tracking-tight">PT CSG Trans</strong>
+        <span class="text-[10px] uppercase tracking-[0.12em] text-gray-500 mt-1">Airport Service</span>
     </div>
-    <span class="font-black text-xl tracking-tight text-gray-800">
-        CSG <span class="text-indigo-600">TRANS</span>
-    </span>
 </div>

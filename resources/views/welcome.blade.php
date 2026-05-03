@@ -1,97 +1,69 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>PT CSG - Airport Transport</title>
+<x-guest-layout>
+    {{-- Background Layer tetap sama --}}
+    <div class="fixed inset-0 z-0">
+        <img src="https://images.unsplash.com/photo-1530521954074-e64f6810b32d?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover opacity-10 mix-blend-luminosity">
+        <div class="absolute inset-0 bg-gradient-to-tr from-[#eef2ff] via-[#f4f6f9] to-[#e8f0ff] opacity-90"></div>
+    </div>
 
-        <linkpreconnect="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,600,800&display=swap" rel="stylesheet" />
-
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="antialiased bg-slate-900 text-white font-sans selection:bg-sky-500 selection:text-white">
-        
-        <div class="fixed inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1530521954074-e64f6810b32d?q=80&w=2070&auto=format&fit=crop" 
-                 alt="Airport Background" 
-                 class="w-full h-full object-cover opacity-40">
-            
-            <div class="absolute inset-0 bg-gradient-to-b from-slate-900/90 via-slate-900/60 to-slate-900"></div>
+    <div class="relative z-10 min-h-screen flex flex-col px-6">
+        {{-- Top Bar --}}
+        <div class="flex items-center justify-between py-8 animate-rise">
+            <x-application-logo />
+            <span class="text-[10px] font-bold text-[#1a6bff] bg-[#e8f0ff] px-3 py-1 rounded-full uppercase">CGK</span>
         </div>
 
-        <div class="relative z-10 min-h-screen flex flex-col justify-between px-6 py-8">
+        <div class="h-[1px] bg-black/5 mb-8 animate-rise"></div>
+
+        {{-- Hero --}}
+        <div class="flex-1 flex flex-col justify-center py-4">
+            <div class="flex items-center gap-2 text-[#1a6bff] text-[11px] font-bold uppercase tracking-[0.18em] mb-4 animate-rise">
+                <div class="w-5 h-[1.5px] bg-[#1a6bff]"></div>
+                Layanan Resmi Bandara
+            </div>
             
-            <div class="text-center pt-8 animate-fade-in-down">
-                <div class="relative inline-block mb-4">
-                    <div class="absolute inset-0 bg-sky-500 blur-xl opacity-30 rounded-full"></div>
-                    <div class="relative inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-sky-500 to-blue-700 rounded-2xl shadow-2xl border border-white/10">
-                        <span class="text-4xl drop-shadow-md">✈️</span>
-                    </div>
-                </div>
-                
-                <h1 class="text-3xl font-black tracking-tight text-white mb-1">
-                    PT CSG
-                    <span class="text-sky-400">TRANS</span>
-                </h1>
-                <p class="text-sky-200 text-xs font-bold tracking-[0.2em] uppercase">Soekarno-Hatta Airport Service</p>
-            </div>
+            {{-- Ukuran dikecilkan ke text-4xl dan font-style tetap italic --}}
+            <h1 class="text-4xl font-serif italic leading-[1.2] text-[#0d1117] mb-6 animate-rise">
+                Tepat Waktu,<br>Setiap <span class="text-[#1a6bff]">Saat.</span>
+            </h1>
+            
+            <p class="text-[14px] text-gray-500 leading-relaxed max-w-[280px] font-light animate-rise">
+                Sistem operasional penjemputan dan pengantaran Soekarno-Hatta International Airport.
+            </p>
+        </div>
 
-            <div class="text-center space-y-3">
-                <h2 class="text-2xl font-bold leading-tight">
-                    Mitra Perjalanan <br>
-                    <span class="text-sky-400">Terpercaya.</span>
-                </h2>
-                <p class="text-sm text-slate-400 max-w-xs mx-auto leading-relaxed">
-                    Sistem operasional resmi penjemputan & pengantaran bandara.
-                </p>
-            </div>
-
-            <div class="w-full max-w-md mx-auto space-y-4 pb-4 animate-fade-in-up">
-                
-                @if (Route::has('login'))
-                    @auth
-                        <a href="{{ url('/dashboard') }}" 
-                           class="group flex items-center justify-between w-full bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 text-white font-bold py-4 px-6 rounded-2xl shadow-lg transition transform active:scale-95 border border-white/10">
-                            <span class="flex flex-col text-left">
-                                <span class="text-xs text-sky-200 font-normal">Halo, {{ Auth::user()->name }}</span>
-                                <span class="text-lg">Buka Aplikasi</span>
-                            </span>
-                            <span class="text-2xl">👉</span>
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" 
-                           class="flex items-center justify-center w-full bg-white text-slate-900 font-black text-lg py-4 px-6 rounded-2xl shadow-xl transition transform active:scale-95 hover:bg-sky-50">
-                            <span class="mr-3 text-2xl">🚖</span>
-                            <span>LOGIN</span>
-                        </a>
-
-                        @if (Route::has('register'))
-                            <div class="text-center mt-4 mb-2">
-                                <p class="text-xs text-slate-500 uppercase tracking-wider">Belum punya akun?</p>
+        {{-- CTA Area --}}
+        <div class="pb-10 space-y-3 animate-rise">
+            @if (Route::has('login'))
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="block">
+                        <x-primary-button>
+                            <div class="flex flex-col text-left leading-tight">
+                                <span class="text-[10px] font-normal opacity-70 uppercase tracking-wider">Buka Aplikasi</span>
+                                <span class="text-base">{{ Auth::user()->name }}</span>
                             </div>
+                            <span class="bg-white/10 w-8 h-8 flex items-center justify-center rounded-full">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </span>
+                        </x-primary-button>
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="block">
+                        <x-primary-button>
+                            <span class="text-base">Masuk ke Akun</span>
+                            <span class="bg-white/10 w-9 h-9 flex items-center justify-center rounded-full">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </span>
+                        </x-primary-button>
+                    </a>
 
-                            <a href="{{ route('register') }}" 
-                               class="flex items-center justify-center w-full bg-slate-800/50 backdrop-blur-md border border-slate-600 hover:border-sky-500 text-slate-300 hover:text-white font-bold py-4 px-6 rounded-2xl transition transform active:scale-95">
-                                <span>Daftar Mitra Baru</span>
-                            </a>
-                        @endif
-                    @endauth
-                @endif
-
-                <div class="text-center pt-8 opacity-60">
-                    <p class="text-[10px] text-slate-500">
-                        &copy; {{ date('Y') }} PT CSG Transportasi.<br>Soekarno-Hatta International Airport.
-                    </p>
-                </div>
-            </div>
+                    @if (Route::has('register'))
+                        <p class="text-center text-[12px] text-gray-400 font-medium py-1">Belum punya akun?</p>
+                        <a href="{{ route('register') }}" class="block">
+                            <x-secondary-button class="text-base py-5">Daftar sebagai Mitra</x-secondary-button>
+                        </a>
+                    @endif
+                @endauth
+            @endif
         </div>
-
-        <style>
-            @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
-            @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-            .animate-fade-in-down { animation: fadeInDown 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
-            .animate-fade-in-up { animation: fadeInUp 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        </style>
-    </body>
-</html>
+    </div>
+</x-guest-layout>
