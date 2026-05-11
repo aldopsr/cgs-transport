@@ -17,7 +17,7 @@
         {{-- Judul --}}
         <div class="text-center mb-10 mt-4 animate-rise" style="animation-delay: 0.1s">
             <h2 class="text-3xl font-serif italic text-[#0d1117]">
-                Login <span class="text-[#1a6bff] font-serif italic">Driver.</span>
+                Login
             </h2>
             <p class="text-gray-500 text-xs mt-2">Masuk untuk mulai operasional</p>
         </div>
