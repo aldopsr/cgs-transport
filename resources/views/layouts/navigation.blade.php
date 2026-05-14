@@ -14,14 +14,18 @@
                     </x-nav-link>
 
                     @if(Auth::user()->role === 'admin')
-    <x-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.index')">
-        {{ __('Laporan') }}
-    </x-nav-link>
-    
-    <x-nav-link :href="route('drivers.index')" :active="request()->routeIs('drivers.*')">
-        {{ __('Data Driver') }}
-    </x-nav-link>
-@endif
+                        <x-nav-link :href="route('admin.attendance.index')" :active="request()->routeIs('admin.attendance.index')">
+                            {{ __('Absensi') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.index')">
+                            {{ __('Laporan') }}
+                        </x-nav-link>
+                        
+                        <x-nav-link :href="route('drivers.index')" :active="request()->routeIs('drivers.*')">
+                            {{ __('Data Driver') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -75,14 +79,18 @@
             </x-responsive-nav-link>
 
             @if(Auth::user()->role === 'admin')
-    <x-responsive-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.index')">
-        {{ __('Laporan') }}
-    </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.attendance.index')" :active="request()->routeIs('admin.attendance.index')">
+                    {{ __('Absensi') }}
+                </x-responsive-nav-link>
 
-    <x-responsive-nav-link :href="route('drivers.index')" :active="request()->routeIs('drivers.*')">
-        {{ __('Data Driver') }}
-    </x-responsive-nav-link>
-@endif
+                <x-responsive-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.index')">
+                    {{ __('Laporan') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('drivers.index')" :active="request()->routeIs('drivers.*')">
+                    {{ __('Data Driver') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
