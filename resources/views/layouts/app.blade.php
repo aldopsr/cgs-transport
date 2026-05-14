@@ -12,6 +12,7 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -23,11 +24,11 @@
         
         {{-- Navbar untuk Admin --}}
         @if(Auth::user()->role === 'admin')
-        <nav class="bg-white/80 backdrop-blur-sm border-b border-blue-100 sticky top-0 z-50 shadow-sm">
+        <nav x-data="{ mobileMenuOpen: false }" class="bg-white/80 backdrop-blur-sm border-b border-blue-100 sticky top-0 z-50 shadow-sm">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-14">
                     <div class="flex items-center gap-6">
-                        <a href="{{ route('dashboard') }}" class="flex items-center gap-2 group">
+                        <a href="{{ route('dashboard') }}" class="flex items-center gap-2 group shrink-0">
                             <div class="flex items-center gap-2">
                                 <img src="{{ asset('logo.png') }}" alt="Logo" class="w-7 h-7 object-contain">
                                 <div>
@@ -37,7 +38,8 @@
                             </div>
                         </a>
 
-                        <div class="hidden sm:flex space-x-1">
+                        {{-- Desktop Menu --}}
+                        <div class="hidden md:flex space-x-1">
                             <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">Dashboard</x-nav-link>
                             <x-nav-link :href="route('admin.attendance.index')" :active="request()->routeIs('admin.attendance.index')">Absensi</x-nav-link>
                             <x-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.index')">Laporan</x-nav-link>
@@ -45,12 +47,13 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-3">
+                    {{-- Desktop User Menu --}}
+                    <div class="hidden md:flex items-center gap-3">
                         <div class="flex items-center gap-2 bg-blue-50 px-3 py-1 rounded-full">
                             <div class="w-6 h-6 bg-gradient-to-br from-[#1a6bff] to-[#0d5ae0] rounded-full flex items-center justify-center text-white text-[10px] font-bold">
                                 {{ substr(Auth::user()->name, 0, 1) }}
                             </div>
-                            <span class="text-xs font-medium text-gray-700 hidden sm:block">{{ Auth::user()->name }}</span>
+                            <span class="text-xs font-medium text-gray-700">{{ Auth::user()->name }}</span>
                         </div>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -58,22 +61,62 @@
                                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                 </svg>
-                                <span class="hidden sm:inline">Keluar</span>
+                                <span>Keluar</span>
                             </button>
                         </form>
                     </div>
+
+                    {{-- Mobile Menu Button --}}
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden flex items-center justify-center w-8 h-8 rounded-lg text-gray-500 hover:bg-gray-100 transition">
+                        <svg x-show="!mobileMenuOpen" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg x-show="mobileMenuOpen" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: none;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            {{-- Mobile Menu --}}
+            <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" style="display: none;" class="md:hidden border-t border-blue-100 bg-white/95 backdrop-blur-sm">
+                <div class="px-4 py-3 space-y-1">
+                    <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="block py-2">Dashboard</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.attendance.index')" :active="request()->routeIs('admin.attendance.index')" class="block py-2">Absensi</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.index')" class="block py-2">Laporan</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('drivers.index')" :active="request()->routeIs('drivers.*')" class="block py-2">Data Driver</x-responsive-nav-link>
+                </div>
+                <div class="px-4 py-3 border-t border-blue-100">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-[#1a6bff] to-[#0d5ae0] rounded-full flex items-center justify-center text-white text-sm font-bold">
+                            {{ substr(Auth::user()->name, 0, 1) }}
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-800">{{ Auth::user()->name }}</div>
+                            <div class="text-xs text-gray-500">{{ Auth::user()->email }}</div>
+                        </div>
+                    </div>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button class="w-full flex items-center justify-center gap-2 bg-red-50 text-red-600 py-2 rounded-lg text-sm font-medium hover:bg-red-100 transition">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            Keluar
+                        </button>
+                    </form>
                 </div>
             </div>
         </nav>
         @endif
 
-        {{-- Navbar untuk Driver --}}
+        {{-- Navbar untuk Driver (Responsive) --}}
         @if(Auth::user()->role !== 'admin')
-        <nav class="bg-white/80 backdrop-blur-sm border-b border-blue-100 sticky top-0 z-50 shadow-sm">
+        <nav x-data="{ mobileMenuOpen: false }" class="bg-white/80 backdrop-blur-sm border-b border-blue-100 sticky top-0 z-50 shadow-sm">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-14">
                     <div class="flex items-center gap-6">
-                        <a href="{{ route('dashboard') }}" class="flex items-center gap-2 group">
+                        <a href="{{ route('dashboard') }}" class="flex items-center gap-2 group shrink-0">
                             <div class="flex items-center gap-2">
                                 <img src="{{ asset('logo.png') }}" alt="Logo" class="w-7 h-7 object-contain">
                                 <div>
@@ -83,14 +126,16 @@
                             </div>
                         </a>
 
-                        <div class="hidden sm:flex space-x-1">
+                        {{-- Desktop Menu --}}
+                        <div class="hidden md:flex space-x-1">
                             <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">Dashboard</x-nav-link>
                             <x-nav-link :href="route('driver.ritase.index')" :active="request()->routeIs('driver.ritase*')">Riwayat</x-nav-link>
                             <x-nav-link :href="route('driver.profile')" :active="request()->routeIs('driver.profile*')">Profil</x-nav-link>
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-3">
+                    {{-- Desktop User Menu --}}
+                    <div class="hidden md:flex items-center gap-3">
                         <div class="flex items-center gap-2 bg-blue-50 px-3 py-1 rounded-full">
                             <div class="w-6 h-6 bg-gradient-to-br from-[#1a6bff] to-[#0d5ae0] rounded-full flex items-center justify-center overflow-hidden">
                                 @if(Auth::user()->photo)
@@ -99,8 +144,8 @@
                                     <span class="text-white text-[10px] font-bold">{{ substr(Auth::user()->name, 0, 1) }}</span>
                                 @endif
                             </div>
-                            <span class="text-xs font-medium text-gray-700 hidden sm:block">{{ explode(' ', Auth::user()->name)[0] }}</span>
-                            <span class="text-[9px] font-mono font-bold text-[#1a6bff] bg-white px-2 py-0.5 rounded-full hidden sm:block">{{ Auth::user()->nopol }}</span>
+                            <span class="text-xs font-medium text-gray-700">{{ explode(' ', Auth::user()->name)[0] }}</span>
+                            <span class="text-[9px] font-mono font-bold text-[#1a6bff] bg-white px-2 py-0.5 rounded-full">{{ Auth::user()->nopol }}</span>
                         </div>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -108,10 +153,53 @@
                                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                 </svg>
-                                <span class="hidden sm:inline">Keluar</span>
+                                <span>Keluar</span>
                             </button>
                         </form>
                     </div>
+
+                    {{-- Mobile Menu Button --}}
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden flex items-center justify-center w-8 h-8 rounded-lg text-gray-500 hover:bg-gray-100 transition">
+                        <svg x-show="!mobileMenuOpen" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg x-show="mobileMenuOpen" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: none;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            {{-- Mobile Menu --}}
+            <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" style="display: none;" class="md:hidden border-t border-blue-100 bg-white/95 backdrop-blur-sm">
+                <div class="px-4 py-3 space-y-1">
+                    <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="block py-2">Dashboard</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('driver.ritase.index')" :active="request()->routeIs('driver.ritase*')" class="block py-2">Riwayat</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('driver.profile')" :active="request()->routeIs('driver.profile*')" class="block py-2">Profil</x-responsive-nav-link>
+                </div>
+                <div class="px-4 py-3 border-t border-blue-100">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-[#1a6bff] to-[#0d5ae0] rounded-full flex items-center justify-center overflow-hidden">
+                            @if(Auth::user()->photo)
+                                <img src="{{ asset('storage/' . Auth::user()->photo) }}" class="w-full h-full object-cover">
+                            @else
+                                <span class="text-white text-sm font-bold">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                            @endif
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-800">{{ Auth::user()->name }}</div>
+                            <div class="text-[10px] font-mono text-[#1a6bff]">{{ Auth::user()->nopol }}</div>
+                        </div>
+                    </div>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button class="w-full flex items-center justify-center gap-2 bg-red-50 text-red-600 py-2 rounded-lg text-sm font-medium hover:bg-red-100 transition">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            Keluar
+                        </button>
+                    </form>
                 </div>
             </div>
         </nav>
