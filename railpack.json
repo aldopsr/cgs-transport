@@ -1,6 +1,18 @@
 {
   "provider": "php",
   "phpVersion": "8.3",
+  "buildAptPackages": [
+    "bison",
+    "re2c",
+    "libgd-dev",
+    "libzip-dev",
+    "libxml2-dev",
+    "libcurl4-openssl-dev",
+    "libssl-dev",
+    "libmbstring-dev",
+    "libonig-dev",
+    "libintl-dev"
+  ],
   "phpExtensions": [
     "gd",
     "pdo_mysql",
@@ -31,4 +43,4 @@
     ],
     "startCmd": "php artisan serve --host 0.0.0.0 --port $PORT"
   }
-}   
+}
