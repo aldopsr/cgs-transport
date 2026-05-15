@@ -9,6 +9,8 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
     unzip \
+    nodejs \
+    npm \
     && docker-php-ext-install \
         pdo_mysql \
         mbstring \
@@ -32,10 +34,14 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 COPY composer.json composer.lock ./
-
 RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
 
+COPY package.json package-lock.json ./
+RUN npm install
+
 COPY . .
+
+RUN npm run build
 
 RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
