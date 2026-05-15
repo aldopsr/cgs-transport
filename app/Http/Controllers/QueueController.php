@@ -9,120 +9,70 @@ use Illuminate\Support\Facades\Auth;
 
 class QueueController extends Controller
 {
-    // 1. DRIVER: Ambil Antrian
+    // ----------------------------------------------------------------
+    // DRIVER: Ambil Antrian → LANGSUNG dipanggil seketika
+    // ----------------------------------------------------------------
     public function store()
     {
-        $user = Auth::user();
+        $user  = Auth::user();
         $today = date('Y-m-d');
 
+        // Pastikan sudah absen dan verified
         $attendance = Attendance::where('user_id', $user->id)
             ->where('date', $today)
-            ->where('status', 'verified') 
+            ->where('status', 'verified')
             ->first();
 
         if (!$attendance) {
-            return back()->with('error', 'Anda belum absen atau absen belum diverifikasi admin!');
+            return back()->with('error', 'Anda belum absen hari ini!');
         }
 
-        // Tambahkan 'siap_siap' agar driver tidak bisa dobel antrian saat statusnya siap_siap
+        // Cegah dobel antrian (kalau masih ada antrian aktif hari ini)
         $existingQueue = Queue::where('user_id', $user->id)
             ->whereDate('created_at', $today)
-            ->whereIn('status', ['menunggu', 'siap_siap', 'dipanggil']) 
+            ->whereIn('status', ['menunggu', 'siap_siap', 'dipanggil'])
             ->first();
 
         if ($existingQueue) {
             return back()->with('error', 'Anda masih dalam antrian aktif hari ini!');
         }
 
-        $count = Queue::whereDate('created_at', $today)->count();
+        $count      = Queue::whereDate('created_at', $today)->count();
         $nextNumber = $count + 1;
 
-        // 1. Simpan antrian baru
-        $newQueue = Queue::create([
-            'user_id' => $user->id,
+        // ✅ Simpan langsung dengan status DIPANGGIL — tidak ada menunggu/siap_siap
+        Queue::create([
+            'user_id'       => $user->id,
             'attendance_id' => $attendance->id,
-            'queue_number' => $nextNumber,
-            'status' => 'menunggu',
+            'queue_number'  => $nextNumber,
+            'status'        => 'dipanggil',
         ]);
 
-        // 🔥 2. LOGIKA BARU: Cek apakah saat ini ada antrian yang sedang berjalan
-        $activeNow = Queue::whereDate('created_at', $today)->where('status', 'dipanggil')->first();
-        
-        if ($activeNow) {
-            $this->triggerSiapSiap($activeNow->queue_number);
-        }
-
-        return back()->with('success', 'Berhasil mengambil nomor antrian: ' . $nextNumber);
+        return back()->with('success', '🔔 Antrian #' . $nextNumber . ' aktif! Silakan siapkan kendaraan.');
     }
 
-    // 2. ADMIN / SISTEM: Update Status Antrian
+    // ----------------------------------------------------------------
+    // ADMIN: Update status antrian secara manual
+    // ----------------------------------------------------------------
     public function update(Request $request, $id)
     {
         $queue = Queue::findOrFail($id);
-        
-        // Tambahkan siap_siap dan dilewati ke validasi
+
         $request->validate([
             'status' => 'required|in:menunggu,siap_siap,dipanggil,selesai,dilewati'
         ]);
 
-        // Simpan status baru
-        $queue->update([
-            'status' => $request->status
-        ]);
+        $queue->update(['status' => $request->status]);
 
-        $msg = 'Status diperbarui.';
+        $msg = 'Status antrian diperbarui.';
 
-        // LOGIKA OTOMATISASI ANTRIAN
-        if ($request->status == 'dipanggil') {
-            // Bisa terpicu otomatis ATAU jika Admin klik Panggil secara manual
-            $this->triggerSiapSiap($queue->queue_number);
-            $msg = 'Driver dipanggil! Antrian berikutnya otomatis bersiap.';
-
+        if ($request->status === 'dipanggil') {
+            $msg = 'Driver dipanggil!';
         } elseif (in_array($request->status, ['selesai', 'dilewati'])) {
-            // Jika antrian saat ini SELESAI atau DILEWATI, langsung panggil antrian berikutnya
-            $this->autoCallNext($queue->queue_number);
-            
-            $statusText = $request->status == 'selesai' ? 'diselesaikan' : 'dilewati';
-            $msg = "Antrian {$statusText}. Antrian berikutnya otomatis dipanggil!";
+            $statusText = $request->status === 'selesai' ? 'diselesaikan' : 'dilewati';
+            $msg = "Antrian {$statusText}.";
         }
 
         return back()->with('success', $msg);
-    }
-
-    // --- FUNGSI PRIVATE UNTUK OTOMATISASI ---
-
-    private function triggerSiapSiap($currentQueueNumber)
-    {
-        $today = date('Y-m-d');
-        
-        // Cari 2 antrian setelah nomor ini yang masih 'menunggu'
-        $nextQueues = Queue::whereDate('created_at', $today)
-            ->where('queue_number', '>', $currentQueueNumber)
-            ->where('status', 'menunggu')
-            ->orderBy('queue_number', 'asc')
-            ->limit(2)
-            ->get();
-
-        foreach ($nextQueues as $q) {
-            $q->update(['status' => 'siap_siap']);
-        }
-    }
-
-    private function autoCallNext($finishedOrSkippedQueueNumber)
-    {
-        $today = date('Y-m-d');
-        
-        // Cari 1 antrian terdekat setelah nomor ini yang statusnya menunggu/siap-siap
-        $nextToCall = Queue::whereDate('created_at', $today)
-            ->where('queue_number', '>', $finishedOrSkippedQueueNumber)
-            ->whereIn('status', ['menunggu', 'siap_siap'])
-            ->orderBy('queue_number', 'asc')
-            ->first();
-
-        if ($nextToCall) {
-            $nextToCall->update(['status' => 'dipanggil']);
-            // Picu antrian di belakangnya untuk siap-siap
-            $this->triggerSiapSiap($nextToCall->queue_number);
-        }
     }
 }

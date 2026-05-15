@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Ritase;
 use Carbon\Carbon;
-// Library Spreadsheet
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -16,9 +15,8 @@ class ReportController extends Controller
 {
     public function index(Request $request)
     {
-        // Default ke hari ini jika tidak ada input tanggal
         $startDate = $request->input('start_date', date('Y-m-d'));
-        $endDate = $request->input('end_date', date('Y-m-d'));
+        $endDate   = $request->input('end_date', date('Y-m-d'));
 
         $query = Ritase::with('user')
             ->whereDate('created_at', '>=', $startDate)
@@ -27,134 +25,139 @@ class ReportController extends Controller
 
         $ritases = $query->get();
 
-        // 🔥 LOGIKA EXPORT: Jika tombol Excel diklik
         if ($request->input('export') === 'excel') {
             return $this->exportExcel($ritases, $startDate, $endDate);
         }
 
-        // Hitung Total Ritase untuk Dashboard UI
         $totalRitase = $ritases->count();
 
         return view('admin.reports.index', compact('ritases', 'startDate', 'endDate', 'totalRitase'));
     }
 
+    // ----------------------------------------------------------------
+    // ADMIN: Update data ritase + edit tanggal & jam
+    // ----------------------------------------------------------------
     public function updateRitase(Request $request, $id)
     {
         $ritase = Ritase::findOrFail($id);
 
         $request->validate([
-            'pendapatan' => 'required|numeric',
-            'lokasi_jemput' => 'nullable|string',
-            'lokasi_tujuan' => 'nullable|string',
+            'pendapatan'    => 'required|numeric',
+            'lokasi_jemput' => 'nullable|string|max:255',
+            'lokasi_tujuan' => 'nullable|string|max:255',
+            'tanggal_waktu' => 'nullable|date_format:Y-m-d\TH:i', // input datetime-local
         ]);
 
-        $ritase->update([
-            'pendapatan' => $request->pendapatan,
+        $updateData = [
+            'pendapatan'    => $request->pendapatan,
             'lokasi_jemput' => $request->lokasi_jemput,
             'lokasi_tujuan' => $request->lokasi_tujuan,
-            'tujuan' => $request->lokasi_tujuan ?? $ritase->tujuan, 
-        ]);
+            'tujuan'        => $request->lokasi_tujuan ?? $ritase->tujuan,
+        ];
+
+        // 🔥 Update tanggal & jam jika diisi admin
+        if ($request->filled('tanggal_waktu')) {
+            $newDateTime = Carbon::createFromFormat('Y-m-d\TH:i', $request->tanggal_waktu);
+            $updateData['created_at']      = $newDateTime;
+            $updateData['waktu_berangkat'] = $newDateTime;
+        }
+
+        // Matikan auto-update timestamps agar created_at bisa diedit manual
+        $ritase->timestamps = false;
+        $ritase->fill($updateData)->save();
+        // Nyalakan kembali setelah save
+        $ritase->timestamps = true;
 
         return redirect()->back()->with('success', '✅ Data Ritase Berhasil Diperbarui!');
     }
 
-    // 🔥 FUNGSI PRIVATE UNTUK GENERATE EXCEL
+    // ----------------------------------------------------------------
+    // PRIVATE: Generate file Excel laporan ritase
+    // ----------------------------------------------------------------
     private function exportExcel($ritases, $startDate, $endDate)
     {
         $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-        
-        // 1. HEADER LAPORAN (JUDUL)
+        $sheet       = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Laporan Ritase');
+
+        // Judul
         $sheet->setCellValue('A1', 'LAPORAN OPERASIONAL & RITASE DRIVER');
         $sheet->mergeCells('A1:H1');
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
         $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
         $periode = Carbon::parse($startDate)->format('d M Y') . ' s/d ' . Carbon::parse($endDate)->format('d M Y');
-        $sheet->setCellValue('A2', "Periode: $periode");
+        $sheet->setCellValue('A2', 'Periode: ' . $periode);
         $sheet->mergeCells('A2:H2');
         $sheet->getStyle('A2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
-        // 2. HEADER TABEL
+        // Header kolom
         $headers = ['No', 'Tanggal', 'Jam', 'Nama Driver', 'Plat Nomor', 'Lokasi Jemput', 'Lokasi Tujuan', 'Pendapatan'];
-        $col = 'A';
-        foreach ($headers as $h) {
+        $cols    = ['A',  'B',       'C',   'D',           'E',          'F',             'G',             'H'];
+
+        foreach ($headers as $i => $h) {
+            $col = $cols[$i];
             $sheet->setCellValue($col . '4', $h);
-            $col++;
+            $sheet->getStyle($col . '4')->getFont()->setBold(true);
+            $sheet->getStyle($col . '4')->getFill()
+                ->setFillType(Fill::FILL_SOLID)
+                ->getStartColor()->setRGB('1a6bff');
+            $sheet->getStyle($col . '4')->getFont()->getColor()->setRGB('FFFFFF');
+            $sheet->getStyle($col . '4')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
         }
 
-        // Style Header (Warna Biru seperti UI Anda)
-        $styleHeader = [
-            'font' => ['bold' => true, 'color' => ['argb' => 'FFFFFFFF']],
-            'fill' => [
-                'fillType' => Fill::FILL_SOLID,
-                'startColor' => ['argb' => 'FF1E3A8A'], // Blue-900
-            ],
-            'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical' => Alignment::VERTICAL_CENTER,
-            ],
-            'borders' => [
-                'allBorders' => ['borderStyle' => Border::BORDER_THIN],
-            ],
-        ];
-        $sheet->getStyle('A4:H4')->applyFromArray($styleHeader);
+        // Data rows
+        $row        = 5;
+        $totalPend  = 0;
+        foreach ($ritases as $i => $r) {
+            $tgl  = Carbon::parse($r->created_at)->format('d/m/Y');
+            $jam  = Carbon::parse($r->created_at)->format('H:i');
+            $pend = (float) $r->pendapatan;
+            $totalPend += $pend;
 
-        // 3. ISI DATA
-        $row = 5;
-        $no = 1;
-        $totalSemua = 0;
+            $sheet->setCellValue('A' . $row, $i + 1);
+            $sheet->setCellValue('B' . $row, $tgl);
+            $sheet->setCellValue('C' . $row, $jam);
+            $sheet->setCellValue('D' . $row, $r->user->name ?? '-');
+            $sheet->setCellValue('E' . $row, $r->user->nopol ?? '-');
+            $sheet->setCellValue('F' . $row, $r->lokasi_jemput ?? '-');
+            $sheet->setCellValue('G' . $row, $r->lokasi_tujuan ?? $r->tujuan ?? '-');
+            $sheet->setCellValue('H' . $row, $pend);
+            $sheet->getStyle('H' . $row)->getNumberFormat()->setFormatCode('"Rp "#,##0');
 
-        foreach ($ritases as $item) {
-            $sheet->setCellValue('A' . $row, $no++);
-            $sheet->setCellValue('B' . $row, $item->created_at->format('d/m/Y'));
-            $sheet->setCellValue('C' . $row, $item->created_at->format('H:i'));
-            $sheet->setCellValue('D' . $row, $item->user->name ?? '-');
-            $sheet->setCellValue('E' . $row, $item->user->nopol ?? '-');
-            $sheet->setCellValue('F' . $row, $item->lokasi_jemput ?? '-');
-            $sheet->setCellValue('G' . $row, $item->lokasi_tujuan ?? $item->tujuan);
-            $sheet->setCellValue('H' . $row, $item->pendapatan);
+            $bgColor = ($i % 2 === 0) ? 'F8FAFF' : 'FFFFFF';
+            $sheet->getStyle('A' . $row . ':H' . $row)
+                ->getFill()->setFillType(Fill::FILL_SOLID)
+                ->getStartColor()->setRGB($bgColor);
 
-            // Format Rupiah
-            $sheet->getStyle('H' . $row)->getNumberFormat()->setFormatCode('"Rp" #,##0');
-            
-            // Align Tengah untuk kolom tertentu
-            $sheet->getStyle("A$row:C$row")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle("E$row")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-
-            $totalSemua += $item->pendapatan;
             $row++;
         }
 
-        // 4. BORDER DATA & AUTO SIZE
-        $lastRow = $row - 1;
-        if($lastRow >= 5) {
-            $sheet->getStyle("A5:H$lastRow")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        // Total row
+        $sheet->setCellValue('G' . $row, 'TOTAL PENDAPATAN');
+        $sheet->getStyle('G' . $row)->getFont()->setBold(true);
+        $sheet->setCellValue('H' . $row, $totalPend);
+        $sheet->getStyle('H' . $row)->getFont()->setBold(true);
+        $sheet->getStyle('H' . $row)->getNumberFormat()->setFormatCode('"Rp "#,##0');
+
+        // Border
+        if ($row > 5) {
+            $sheet->getStyle('A4:H' . ($row - 1))->getBorders()->getAllBorders()
+                ->setBorderStyle(Border::BORDER_THIN)
+                ->getColor()->setRGB('E5E7EB');
         }
 
-        // 5. TOTAL BAWAH
-        $sheet->mergeCells("A$row:G$row");
-        $sheet->setCellValue("A$row", "TOTAL PENDAPATAN KESELURUHAN ");
-        $sheet->getStyle("A$row")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-        $sheet->setCellValue("H$row", $totalSemua);
-        $sheet->getStyle("H$row")->getNumberFormat()->setFormatCode('"Rp" #,##0');
-        
-        $sheet->getStyle("A$row:H$row")->getFont()->setBold(true);
-        $sheet->getStyle("A$row:H$row")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle("H$row")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('FFD1FAE5'); // Green-100
-
-        // Auto width kolom
-        foreach (range('A', 'H') as $columnID) {
-            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        // Auto width
+        foreach ($cols as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
-        // 6. PROSES DOWNLOAD
-        $filename = 'Laporan_Ritase_' . $startDate . '_to_' . $endDate . '.xlsx';
+        $writer   = new Xlsx($spreadsheet);
+        $filename = 'Laporan_Ritase_' . date('Ymd_His') . '.xlsx';
+
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
         header('Cache-Control: max-age=0');
-
-        $writer = new Xlsx($spreadsheet);
         $writer->save('php://output');
         exit;
     }
