@@ -1,0 +1,34 @@
+{
+  "provider": "php",
+  "phpVersion": "8.3",
+  "phpExtensions": [
+    "gd",
+    "pdo_mysql",
+    "mbstring",
+    "xml",
+    "zip",
+    "intl",
+    "curl",
+    "bcmath",
+    "fileinfo",
+    "openssl",
+    "tokenizer"
+  ],
+  "install": {
+    "cmd": "composer install --no-dev --optimize-autoloader --no-scripts --no-interaction"
+  },
+  "build": {
+    "cmds": [
+      "php artisan storage:link || true",
+      "php artisan config:cache",
+      "php artisan route:cache",
+      "php artisan view:cache"
+    ]
+  },
+  "deploy": {
+    "cmds": [
+      "php artisan migrate --force"
+    ],
+    "startCmd": "php artisan serve --host 0.0.0.0 --port $PORT"
+  }
+}   
