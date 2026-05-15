@@ -15,9 +15,13 @@ nixPkgs = [
   "composer"
 ]
 
+[phases.install]
+cmds = [
+  "composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --ignore-platform-req=ext-gd --ignore-platform-req=php-64bit"
+]
+
 [phases.build]
 cmds = [
-  "composer install --no-dev --optimize-autoloader --no-scripts --no-interaction",
   "php artisan storage:link || true",
   "php artisan config:cache",
   "php artisan route:cache",
