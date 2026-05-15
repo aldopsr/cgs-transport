@@ -9,7 +9,7 @@
     "libxml2-dev",
     "libcurl4-openssl-dev",
     "libssl-dev",
-    "libonig-dev",
+    "libonig-dev"
   ],
   "phpExtensions": [
     "gd",
@@ -17,15 +17,13 @@
     "mbstring",
     "xml",
     "zip",
-    "intl",
     "curl",
     "bcmath",
     "fileinfo",
-    "openssl",
     "tokenizer"
   ],
   "install": {
-    "cmd": "composer install --no-dev --optimize-autoloader --no-scripts --no-interaction"
+    "cmd": "composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --ignore-platform-reqs"
   },
   "build": {
     "cmds": [
