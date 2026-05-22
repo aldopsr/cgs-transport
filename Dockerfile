@@ -50,4 +50,4 @@ RUN php artisan storage:link || true
 
 EXPOSE 8080
 
-CMD until php artisan migrate --force; do echo "DB not ready, retrying in 5s..."; sleep 5; done && php artisan serve --host=0.0.0.0 --port=8080
+CMD until php artisan migrate --force; do echo "DB not ready, retrying in 5s..."; sleep 5; done && php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
