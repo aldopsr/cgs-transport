@@ -15,7 +15,6 @@
         <a href="{{ route('dashboard') }}" class="text-[10px] font-black text-white bg-red-500/80 hover:bg-red-600 px-4 py-1.5 rounded-full uppercase tracking-wider transition">Batal</a>
     </div>
 
-    {{-- Spacer agar konten tidak tertutup Top Bar --}}
     <div class="h-20"></div>
 
     <div class="px-5 pb-24">
@@ -29,7 +28,7 @@
                 </div>
                 <p class="text-[10px] text-gray-500 mt-1 ml-6">Upload foto struk atau bukti penyelesaian perjalanan</p>
             </div>
-            
+
             <div class="p-6">
                 @if ($errors->any())
                     <div class="bg-red-50 text-red-600 p-3 rounded-xl text-xs mb-4 border border-red-100">
@@ -43,11 +42,11 @@
 
                 <form action="{{ route('driver.ritase.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    
+
                     <label class="block w-full min-h-[220px] border-2 border-dashed border-blue-200 hover:border-[#1a6bff] rounded-2xl flex flex-col items-center justify-center bg-blue-50/30 mb-6 cursor-pointer transition group relative overflow-hidden">
-                        
+
                         <img id="preview" class="absolute inset-0 w-full h-full object-cover hidden opacity-60 group-hover:opacity-100 transition">
-                        
+
                         <div class="relative z-10 flex flex-col items-center">
                             <div class="w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center group-hover:scale-110 transition mb-3">
                                 <svg class="w-6 h-6 text-[#1a6bff]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -57,28 +56,26 @@
                             <span class="text-xs text-gray-500 font-medium" id="text-label">Klik untuk upload foto</span>
                             <span class="text-[9px] text-gray-400 mt-1">Format JPG, PNG. Maks 2MB</span>
                         </div>
-                        
-                        <input type="file" name="foto_bukti" id="foto_bukti" required class="hidden" accept="image/*" 
+
+                        <input type="file" name="foto_bukti" id="foto_bukti" required class="hidden" accept="image/*"
                                onchange="
                                    const file = this.files[0];
-                                const file = this.files[0];
-if (file) {
-    const maxSize = 2 * 1024 * 1024; // 2MB
-    if (file.size > maxSize) {
-        alert('Ukuran foto terlalu besar. Maksimal 2MB.');
-        this.value = '';
-        return;
-    }
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const preview = document.getElementById('preview');
-        preview.src = e.target.result;
-        preview.classList.remove('hidden');
-        document.getElementById('text-label').innerHTML = '✓ ' + file.name;
-        document.getElementById('text-label').classList.add('text-green-600', 'font-bold');
-    }
-    reader.readAsDataURL(file);
-}
+                                   if (file) {
+                                       if (file.size > 2 * 1024 * 1024) {
+                                           alert('Ukuran foto terlalu besar. Maksimal 2MB.');
+                                           this.value = '';
+                                           return;
+                                       }
+                                       const reader = new FileReader();
+                                       reader.onload = function(e) {
+                                           const preview = document.getElementById('preview');
+                                           preview.src = e.target.result;
+                                           preview.classList.remove('hidden');
+                                           document.getElementById('text-label').innerHTML = '✓ ' + file.name;
+                                           document.getElementById('text-label').classList.add('text-green-600', 'font-bold');
+                                       }
+                                       reader.readAsDataURL(file);
+                                   }
                                ">
                     </label>
 
