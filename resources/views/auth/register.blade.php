@@ -48,7 +48,7 @@
                             <img id="photo-preview" src="" class="hidden w-full h-full object-cover absolute top-0 left-0" alt="Preview">
                         </div>
                     </div>
-                    <input type="file" id="photo" name="photo" accept="image/*" capture="user" required class="hidden" onchange="previewImage(event)">
+                    <input type="file" id="photo" name="photo" accept="image/*" required class="hidden" onchange="previewImage(event)">
                     <p class="text-[9px] text-gray-400 mt-1">Foto selfie wajah jelas terang</p>
                     <x-input-error :messages="$errors->get('photo')" class="mt-1 text-xs" />
                 </div>
