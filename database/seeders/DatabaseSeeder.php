@@ -8,26 +8,15 @@ use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         User::create([
-            'name' => 'Admin CGS',
-            'email' => 'admin@CGS.com',
-            'password' => Hash::make('password'), 
-            'role' => 'admin',
-            'phone' => '081234567890',
-        ]);
-
-        User::create([
-            'name' => 'Budi Driver',
-            'email' => 'budi@driver.com',
-            'password' => Hash::make('password'),
-            'role' => 'driver',
-            'nopol' => 'B 1234 CD',
-            'phone' => '08987654321',
+            'name'     => 'Admin CGS',
+            'email'    => 'admin@CGS.com',
+            'password' => Hash::make('password123'),
+            'role'     => 'admin',
+            'nopol'    => 'B 1 CSG',
+            'phone'    => '081234567890',
         ]);
     }
 }
