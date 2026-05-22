@@ -10,13 +10,15 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        User::create([
-            'name'     => 'Admin CGS',
-            'email'    => 'admin@CGS.com',
-            'password' => Hash::make('password123'),
-            'role'     => 'admin',
-            'nopol'    => 'B 1 CSG',
-            'phone'    => '081234567890',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'admin@CGS.com'],
+            [
+                'name'     => 'Admin CGS',
+                'password' => Hash::make('password123'),
+                'role'     => 'admin',
+                'nopol'    => 'B 1 CSG',
+                'phone'    => '081234567890',
+            ]
+        );
     }
 }
