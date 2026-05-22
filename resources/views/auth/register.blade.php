@@ -151,16 +151,26 @@
 
     <script>
         function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function() {
-                const output = document.getElementById('photo-preview');
-                const icon = document.getElementById('upload-icon');
-                output.src = reader.result;
-                output.classList.remove('hidden');
-                icon.classList.add('hidden');
-                output.parentElement.classList.add('border-[#1a6bff]', 'border-solid');
-            }
-            reader.readAsDataURL(event.target.files[0]);
-        }
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+        alert('Ukuran foto terlalu besar. Maksimal 5MB.');
+        event.target.value = ''; // reset input
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function() {
+        const output = document.getElementById('photo-preview');
+        const icon = document.getElementById('upload-icon');
+        output.src = reader.result;
+        output.classList.remove('hidden');
+        icon.classList.add('hidden');
+        output.parentElement.classList.add('border-[#1a6bff]', 'border-solid');
+    }
+    reader.readAsDataURL(file);
+}
     </script>
 </x-guest-layout>

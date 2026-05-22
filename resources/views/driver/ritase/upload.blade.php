@@ -61,17 +61,24 @@
                         <input type="file" name="foto_bukti" id="foto_bukti" required class="hidden" accept="image/*" 
                                onchange="
                                    const file = this.files[0];
-                                   if (file) {
-                                       const reader = new FileReader();
-                                       reader.onload = function(e) {
-                                           const preview = document.getElementById('preview');
-                                           preview.src = e.target.result;
-                                           preview.classList.remove('hidden');
-                                           document.getElementById('text-label').innerHTML = '✓ ' + file.name;
-                                           document.getElementById('text-label').classList.add('text-green-600', 'font-bold');
-                                       }
-                                       reader.readAsDataURL(file);
-                                   }
+                                const file = this.files[0];
+if (file) {
+    const maxSize = 2 * 1024 * 1024; // 2MB
+    if (file.size > maxSize) {
+        alert('Ukuran foto terlalu besar. Maksimal 2MB.');
+        this.value = '';
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const preview = document.getElementById('preview');
+        preview.src = e.target.result;
+        preview.classList.remove('hidden');
+        document.getElementById('text-label').innerHTML = '✓ ' + file.name;
+        document.getElementById('text-label').classList.add('text-green-600', 'font-bold');
+    }
+    reader.readAsDataURL(file);
+}
                                ">
                     </label>
 
