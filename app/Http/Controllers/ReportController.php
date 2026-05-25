@@ -161,4 +161,21 @@ class ReportController extends Controller
         $writer->save('php://output');
         exit;
     }
+
+    // ----------------------------------------------------------------
+    // ADMIN: Hapus data ritase
+    // ----------------------------------------------------------------
+    public function destroyRitase($id)
+    {
+        $ritase = Ritase::findOrFail($id);
+
+        // Hapus foto bukti dari storage jika ada
+        if ($ritase->foto_bukti && \Storage::disk('public')->exists($ritase->foto_bukti)) {
+            \Storage::disk('public')->delete($ritase->foto_bukti);
+        }
+
+        $ritase->delete();
+
+        return redirect()->back()->with('success', '🗑️ Data ritase berhasil dihapus.');
+    }
 }

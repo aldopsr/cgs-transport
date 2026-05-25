@@ -116,24 +116,38 @@
                                         Rp {{ number_format($data->pendapatan, 0, ',', '.') }}
                                     </td>
                                     <td class="px-6 py-4 text-center no-print">
-                                        @if($data->foto_bukti)
-                                            <button onclick="openEditModal(
-                                                '{{ $data->id }}',
-                                                '{{ asset('storage/'.$data->foto_bukti) }}',
-                                                '{{ addslashes($data->lokasi_jemput) }}',
-                                                '{{ addslashes($data->lokasi_tujuan ?? $data->tujuan) }}',
-                                                '{{ $data->pendapatan }}',
-                                                '{{ \Carbon\Carbon::parse($data->created_at)->format('Y-m-d\TH:i') }}'
-                                            )"
-                                            class="inline-flex items-center gap-1 bg-blue-50 text-[#1a6bff] hover:bg-blue-100 px-3 py-1.5 rounded-lg transition text-xs font-bold">
+                                        <div class="flex items-center justify-center gap-2">
+                                            @if($data->foto_bukti)
+                                                <button onclick="openEditModal(
+                                                    '{{ $data->id }}',
+                                                    '{{ asset('storage/'.$data->foto_bukti) }}',
+                                                    '{{ addslashes($data->lokasi_jemput) }}',
+                                                    '{{ addslashes($data->lokasi_tujuan ?? $data->tujuan) }}',
+                                                    '{{ $data->pendapatan }}',
+                                                    '{{ \Carbon\Carbon::parse($data->created_at)->format('Y-m-d\TH:i') }}'
+                                                )"
+                                                class="inline-flex items-center gap-1 bg-blue-50 text-[#1a6bff] hover:bg-blue-100 px-3 py-1.5 rounded-lg transition text-xs font-bold">
+                                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                    </svg>
+                                                    Cek & Edit
+                                                </button>
+                                            @endif
+
+                                            {{-- Tombol Hapus — selalu tampil --}}
+                                            <button
+                                                onclick="confirmDelete(
+                                                    {{ $data->id }},
+                                                    '{{ addslashes($data->user->name ?? 'driver ini') }}',
+                                                    '{{ \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') }}'
+                                                )"
+                                                class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg transition">
                                                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                 </svg>
-                                                Cek & Edit
+                                                Hapus
                                             </button>
-                                        @else
-                                            <span class="text-xs text-gray-400">-</span>
-                                        @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
@@ -201,7 +215,6 @@
                                     <p>Cek foto di samping. Jika hasil scan salah, koreksi data di bawah ini.</p>
                                 </div>
 
-                                {{-- 🔥 Field Tanggal & Jam (BARU) --}}
                                 <div>
                                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Tanggal & Jam Orderan</label>
                                     <input type="datetime-local" name="tanggal_waktu" id="inputTanggalWaktu"
@@ -248,8 +261,61 @@
         </div>
     </div>
 
+    {{-- Modal Konfirmasi Hapus --}}
+    <div id="deleteModal" class="fixed inset-0 z-50 hidden overflow-y-auto" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-gray-900/70 backdrop-blur-sm" onclick="closeDeleteModal()"></div>
+
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md animate-rise">
+
+                {{-- Header --}}
+                <div class="bg-gradient-to-r from-red-500 to-red-600 px-6 py-4 rounded-t-2xl flex items-center gap-3">
+                    <div class="bg-white/20 rounded-full p-2">
+                        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Konfirmasi Hapus Data</h3>
+                </div>
+
+                {{-- Body --}}
+                <div class="px-6 py-5">
+                    <p class="text-gray-600 text-sm">Anda akan menghapus data ritase:</p>
+                    <div class="mt-3 bg-red-50 border border-red-100 rounded-xl p-4 space-y-1">
+                        <p class="text-sm font-bold text-gray-800" id="deleteDriverName">-</p>
+                        <p class="text-xs text-gray-500" id="deleteDateTime">-</p>
+                    </div>
+                    <p class="mt-4 text-xs text-red-600 font-semibold">
+                        ⚠️ Tindakan ini tidak dapat dibatalkan. Data akan dihapus permanen beserta foto buktinya.
+                    </p>
+                </div>
+
+                {{-- Footer --}}
+                <div class="px-6 pb-5 flex justify-end gap-3">
+                    <button
+                        onclick="closeDeleteModal()"
+                        class="px-5 py-2 text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-xl transition">
+                        Batal
+                    </button>
+
+                    <form id="deleteForm" method="POST" action="">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                            class="px-5 py-2 text-sm font-bold text-white bg-red-500 hover:bg-red-600 rounded-xl transition flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            Ya, Hapus Data
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <script>
-        // 🔥 Tambah parameter tanggalWaktu
         function openEditModal(id, imageSrc, jemput, tujuan, harga, tanggalWaktu) {
             document.getElementById('modalImage').src = imageSrc;
             document.getElementById('inputPendapatan').value = harga || 0;
@@ -267,8 +333,22 @@
             document.getElementById('editModal').classList.add('hidden');
         }
 
+        function confirmDelete(id, driverName, dateTime) {
+            document.getElementById('deleteDriverName').textContent = 'Driver: ' + driverName;
+            document.getElementById('deleteDateTime').textContent   = 'Tanggal: ' + dateTime;
+            document.getElementById('deleteForm').action = '/ritase/' + id + '/destroy';
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+        }
+
         document.onkeydown = function(evt) {
-            if (evt.keyCode === 27) closeModal();
+            if (evt.keyCode === 27) {
+                closeModal();
+                closeDeleteModal();
+            }
         };
     </script>
 

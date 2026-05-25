@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
     // Laporan
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     Route::put('/ritase/{id}/update', [ReportController::class, 'updateRitase'])->name('ritase.update.admin');
+    Route::delete('/ritase/{id}/destroy', [ReportController::class, 'destroyRitase'])->name('ritase.destroy.admin');
 
     // Driver Management
     Route::middleware('verified')->group(function () {
