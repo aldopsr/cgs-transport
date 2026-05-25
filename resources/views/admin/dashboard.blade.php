@@ -20,8 +20,10 @@
                             class="border-none p-0 text-gray-800 font-bold focus:ring-0 cursor-pointer bg-transparent text-sm"
                             onchange="this.form.submit()">
                     </div>
-                    <div class="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center">
-                        <svg class="w-4 h-4 text-[#1a6bff]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    {{-- Icon SVG biru: klik icon = klik input --}}
+                    <div class="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center cursor-pointer"
+                        onclick="this.previousElementSibling.querySelector('input').showPicker()">
+                        <svg class="w-4 h-4 text-[#1a6bff] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                     </div>
@@ -300,8 +302,10 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
         input[type="date"]::-webkit-calendar-picker-indicator {
-            display: none;
-            -webkit-appearance: none;
+            opacity: 0;
+            position: absolute;
+            width: 0;
+            height: 0;
         }
     </style>
 </x-app-layout>
