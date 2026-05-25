@@ -25,42 +25,48 @@
 
             {{-- Filter Section --}}
             <div class="bg-white rounded-2xl shadow-md border border-black/5 p-6 no-print animate-rise">
-                <form action="{{ route('reports.index') }}" method="GET" class="flex flex-col md:flex-row items-end gap-4">
-                    <div class="w-full md:w-1/3">
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Dari Tanggal</label>
-                        <input type="date" name="start_date" value="{{ $startDate }}"
-                            class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#1a6bff] focus:ring focus:ring-blue-100 transition">
-                    </div>
-                    <div class="w-full md:w-1/3">
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Sampai Tanggal</label>
-                        <input type="date" name="end_date" value="{{ $endDate }}"
-                            class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#1a6bff] focus:ring focus:ring-blue-100 transition">
-                    </div>
-                    <div class="flex items-center gap-3 flex-wrap">
-                        {{-- Filter --}}
-                        <button type="submit"
-                            class="flex items-center justify-center gap-2 bg-[#1a6bff] hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition no-print">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
-                            </svg>
-                            Filter
-                        </button>
-                        {{-- Cetak --}}
-                        <button type="button" onclick="window.print()"
-                            class="flex items-center justify-center gap-2 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition no-print">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                            </svg>
-                            Cetak
-                        </button>
-                        {{-- Excel --}}
-                        <button type="submit" name="export" value="excel"
-                            class="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition no-print">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            Excel
-                        </button>
+                <form action="{{ route('reports.index') }}" method="GET">
+                    <div class="flex flex-col md:flex-row items-end gap-4">
+                        
+                        <div class="w-full md:w-1/3">
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Dari Tanggal</label>
+                            <input type="date" name="start_date" value="{{ $startDate }}"
+                                class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#1a6bff] focus:ring focus:ring-blue-100 transition">
+                        </div>
+
+                        <div class="w-full md:w-1/3">
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Sampai Tanggal</label>
+                            <input type="date" name="end_date" value="{{ $endDate }}"
+                                class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-[#1a6bff] focus:ring focus:ring-blue-100 transition">
+                        </div>
+
+                        {{-- Tombol sejajar dalam satu baris --}}
+                        <div class="flex items-center gap-3 md:ml-auto flex-shrink-0">
+                            <button type="submit"
+                                class="flex items-center justify-center gap-2 bg-[#1a6bff] hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition no-print">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
+                                </svg>
+                                Filter
+                            </button>
+
+                            <button type="button" onclick="window.print()"
+                                class="flex items-center justify-center gap-2 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition no-print">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                </svg>
+                                Cetak
+                            </button>
+
+                            <button type="submit" name="export" value="excel"
+                                class="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition no-print">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                Excel
+                            </button>
+                        </div>
+
                     </div>
                 </form>
             </div>
@@ -119,12 +125,12 @@
                                         <div class="flex items-center justify-center gap-2">
                                             @if($data->foto_bukti)
                                                 <button onclick="openEditModal(
-                                                    '{{ $data->id }}',
-                                                    '{{ asset('storage/'.$data->foto_bukti) }}',
-                                                    '{{ addslashes($data->lokasi_jemput) }}',
-                                                    '{{ addslashes($data->lokasi_tujuan ?? $data->tujuan) }}',
-                                                    '{{ $data->pendapatan }}',
-                                                    '{{ \Carbon\Carbon::parse($data->created_at)->format('Y-m-d\TH:i') }}'
+                                                    {{ $data->id }},
+                                                    {{ json_encode(asset('storage/'.$data->foto_bukti)) }},
+                                                    {{ json_encode($data->lokasi_jemput ?? '') }},
+                                                    {{ json_encode($data->lokasi_tujuan ?? $data->tujuan ?? '') }},
+                                                    {{ $data->pendapatan }},
+                                                    {{ json_encode(\Carbon\Carbon::parse($data->created_at)->format('Y-m-d\TH:i')) }}
                                                 )"
                                                 class="inline-flex items-center gap-1 bg-blue-50 text-[#1a6bff] hover:bg-blue-100 px-3 py-1.5 rounded-lg transition text-xs font-bold">
                                                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

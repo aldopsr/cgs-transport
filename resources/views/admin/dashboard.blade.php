@@ -299,5 +299,9 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            display: none;
+            -webkit-appearance: none;
+        }
     </style>
 </x-app-layout>
