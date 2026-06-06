@@ -83,8 +83,14 @@
                                 <tr class="hover:bg-gray-50/50 transition">
                                     <td class="px-5 py-3.5">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-8 h-8 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center font-bold text-[#1a6bff] text-sm">
-                                                {{ substr($driver->name, 0, 1) }}
+                                            <div class="w-9 h-9 rounded-lg overflow-hidden flex-shrink-0 border border-gray-100 shadow-sm">
+                                                @if($driver->photo)
+                                                    <img src="{{ asset('storage/' . $driver->photo) }}" alt="{{ $driver->name }}" class="w-full h-full object-cover">
+                                                @else
+                                                    <div class="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center font-bold text-[#1a6bff] text-sm">
+                                                        {{ substr($driver->name, 0, 1) }}
+                                                    </div>
+                                                @endif
                                             </div>
                                             <div class="font-semibold text-gray-800 text-sm">{{ $driver->name }}</div>
                                         </div>

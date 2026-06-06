@@ -24,11 +24,39 @@
                 </div>
 
                 <div class="p-6">
-                    <form action="{{ route('drivers.update', $driver->id) }}" method="POST">
+                    <form action="{{ route('drivers.update', $driver->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
                         <div class="space-y-5">
+                            {{-- Foto Profil --}}
+                            <div>
+                                <label class="block text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-2 ml-1">
+                                    Foto Profil
+                                </label>
+                                <div class="flex items-center gap-4">
+                                    <div class="w-20 h-20 rounded-xl overflow-hidden border-2 border-gray-200 flex-shrink-0 bg-gray-50" id="photo-preview-wrapper">
+                                        @if($driver->photo)
+                                            <img id="photo-preview" src="{{ asset('storage/' . $driver->photo) }}" alt="Foto" class="w-full h-full object-cover">
+                                        @else
+                                            <div id="photo-placeholder" class="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center font-bold text-[#1a6bff] text-2xl">
+                                                {{ substr($driver->name, 0, 1) }}
+                                            </div>
+                                            <img id="photo-preview" src="" alt="Foto" class="w-full h-full object-cover hidden">
+                                        @endif
+                                    </div>
+                                    <div class="flex-1">
+                                        <label for="photo-input" class="flex items-center gap-2 cursor-pointer bg-gray-50 border border-gray-200 hover:border-[#1a6bff] hover:bg-blue-50 text-gray-600 hover:text-[#1a6bff] font-semibold text-xs py-2.5 px-4 rounded-xl transition">
+                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                            Pilih Foto Baru
+                                        </label>
+                                        <input id="photo-input" type="file" name="photo" accept="image/*" class="hidden" onchange="previewPhoto(this)">
+                                        <p class="text-[9px] text-gray-400 mt-1.5 ml-1">JPG, PNG, maks. 2MB. Kosongkan jika tidak ingin mengubah foto.</p>
+                                    </div>
+                                </div>
+                            </div>
                             <div>
                                 <label class="block text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 ml-1">
                                     Nama Lengkap
@@ -96,4 +124,20 @@
             </div>
         </div>
     </div>
+
+<script>
+function previewPhoto(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('photo-preview');
+            const placeholder = document.getElementById('photo-placeholder');
+            preview.src = e.target.result;
+            preview.classList.remove('hidden');
+            if (placeholder) placeholder.classList.add('hidden');
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
 </x-app-layout>

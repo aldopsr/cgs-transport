@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class DriverController extends Controller
 {
@@ -40,7 +41,8 @@ class DriverController extends Controller
             'email' => 'required|email|unique:users,email,'.$driver->id,
             'phone' => ['required', 'string', 'max:15'],
             'nopol' => 'required|string|max:20',
-            'password' => 'nullable|min:8', 
+            'password' => 'nullable|min:8',
+            'photo' => 'nullable|image|max:2048',
         ]);
 
         $data = [
@@ -52,6 +54,13 @@ class DriverController extends Controller
 
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
+        }
+
+        if ($request->hasFile('photo')) {
+            if ($driver->photo) {
+                Storage::disk('public')->delete($driver->photo);
+            }
+            $data['photo'] = $request->file('photo')->store('photos', 'public');
         }
 
         $driver->update($data);
